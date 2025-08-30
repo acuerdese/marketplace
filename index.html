@@ -3,78 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animación de Lluvia</title>
+    <title>Soluciones de Tráfico</title>
     <style>
-        #rain-container {
-            position: fixed;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+        }
+        .header {
+            background: #003087;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 14px;
+        }
+        .nav .lang {
+            font-weight: bold;
+            border: 1px solid white;
+            padding: 2px 8px;
+        }
+        .main-content {
+            position: relative;
+            text-align: center;
+            padding: 50px 20px;
+            background: url('https://via.placeholder.com/1200x400') no-repeat center;
+            background-size: cover;
+            color: #003087;
+        }
+        .main-content h1 {
+            font-size: 48px;
+            margin: 0;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+        }
+        .main-content p {
+            font-size: 16px;
+            max-width: 600px;
+            margin: 20px auto;
+            line-height: 1.5;
+        }
+        .team-photo {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .button {
+            background: #ffcc00;
+            color: #003087;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background: #e6b800;
+        }
+        .overlay {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
-        }
-        .rain-element {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: blue; /* Puedes cambiar el color o estilo */
-            top: 0;
-            animation: fall linear infinite;
-        }
-        @keyframes fall {
-            0% { transform: translateY(-100vh); }
-            100% { transform: translateY(100vh); }
-        }
-        #counter {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            font-size: 24px;
-            color: white;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 5px 10px;
-            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 0;
         }
     </style>
 </head>
 <body>
-    <div id="rain-container"></div>
-    <div id="counter">200</div>
-    <script>
-        const container = document.getElementById('rain-container');
-        const counter = document.getElementById('counter');
-        let elements = [];
-        const totalElements = 200;
-        const disappearanceInterval = 432 * 1000; // 432 segundos en milisegundos
-
-        // Crear los 200 elementos
-        for (let i = 0; i < totalElements; i++) {
-            const element = document.createElement('div');
-            element.className = 'rain-element';
-            const left = Math.random() * 100; // Posición horizontal aleatoria
-            const duration = 2 + Math.random() * 8; // Duración entre 2 y 10 segundos
-            const delay = -Math.random() * duration; // Retraso para desfasar el inicio
-            element.style.left = `${left}%`;
-            element.style.animationDuration = `${duration}s`;
-            element.style.animationDelay = `${delay}s`;
-            container.appendChild(element);
-            elements.push(element);
-        }
-
-        let remainingElements = totalElements;
-        counter.textContent = remainingElements;
-
-        // Eliminar un elemento cada 432 segundos
-        setInterval(() => {
-            if (remainingElements > 0) {
-                const index = Math.floor(Math.random() * elements.length);
-                const element = elements[index];
-                element.remove();
-                elements.splice(index, 1);
-                remainingElements--;
-                counter.textContent = remainingElements;
-            }
-        }, disappearanceInterval);
-    </script>
+    <div class="header">
+        <div class="logo">soluciones<span style="color: #ffcc00;">de tráfico</span></div>
+        <div class="nav">
+            <a href="#">Inicio</a>
+            <a href="#">Quiénes somos</a>
+            <a href="#">Productos</a>
+            <a href="#">Nuestros servicios</a>
+            <a href="#">Aliados tecnológicos</a>
+            <a href="#">Blog</a>
+            <a href="#">Contáctenos</a>
+            <a href="#" class="lang">ES</a>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="overlay"></div>
+        <h1>conoce<br>sobre<br>nosotros</h1>
+        <p>Creamos en ciudades que se mueven mejor cuando la tecnología está al servicio de las personas. Por eso, trabajamos para hacer realidad una movilidad que sea inteligente, segura, eficiente y sostenible.</p>
+        <p>Somos una empresa colombiana 26 años de trayectoria en el desarrollo e implementación de soluciones ITS (Intelligent Traffic Systems), respaldada por un equipo de profesionales altamente calificados y comprometidos con la transformación de la movilidad en el país.</p>
+        <p>Representantes en Colombia a compañías internacionales líderes y especialistas en tecnología para la gestión del tránsito, urbano e interurbano, actuando como distribuidores autorizados y aliados estratégicos para instituciones públicas y privadas que buscan soluciones integrales, confiables y de alta calidad.</p>
+        <img src="https://via.placeholder.com/600x300" alt="Team Photo" class="team-photo">
+        <button class="button">¡Hablemos!</button>
+    </div>
 </body>
 </html>
