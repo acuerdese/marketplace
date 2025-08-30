@@ -6,91 +6,94 @@
     <title>Soluciones de Tráfico</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            background: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            background: linear-gradient(to bottom, #f5f7fa, #e0e7f0);
         }
         .header {
-            background: #003087;
-            color: white;
+            background: #1a2e5a;
             padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
+            z-index: 10;
         }
-        .header .logo {
-            font-size: 24px;
-            font-weight: bold;
+        .logo {
+            height: 40px;
         }
-        .nav a {
-            color: white;
+        .nav-links a {
+            color: #fff;
             text-decoration: none;
             margin-left: 20px;
             font-size: 14px;
-        }
-        .nav .lang {
             font-weight: bold;
-            border: 1px solid white;
-            padding: 2px 8px;
         }
-        .main-content {
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .lang-switch {
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .content {
             position: relative;
             text-align: center;
             padding: 50px 20px;
-            background: url('https://via.placeholder.com/1200x400') no-repeat center;
+            background: url('background-image.jpg') no-repeat center top;
             background-size: cover;
-            color: #003087;
+            min-height: 600px;
         }
-        .main-content h1 {
-            font-size: 48px;
-            margin: 0;
+        .title {
+            font-size: 72px;
             font-weight: bold;
-            position: relative;
-            z-index: 1;
-        }
-        .main-content p {
-            font-size: 16px;
-            max-width: 600px;
-            margin: 20px auto;
-            line-height: 1.5;
-        }
-        .team-photo {
-            max-width: 100%;
-            height: auto;
-            margin-top: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        .button {
-            background: #ffcc00;
-            color: #003087;
-            border: none;
+            color: #1a2e5a;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            display: inline-block;
             padding: 10px 20px;
+            border-radius: 50px;
+        }
+        .description {
+            font-size: 18px;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.5;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .team-image {
+            max-width: 80%;
+            border-radius: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+        .cta-button {
+            background: #f4a900;
+            color: #fff;
+            padding: 15px 30px;
             font-size: 18px;
             font-weight: bold;
-            border-radius: 5px;
+            border: none;
+            border-radius: 50px;
             cursor: pointer;
-            margin-top: 20px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 8px rgba(244, 169, 0, 0.5);
         }
-        .button:hover {
-            background: #e6b800;
-        }
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 0;
+        .cta-button:hover {
+            background: #e59400;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">soluciones<span style="color: #ffcc00;">de tráfico</span></div>
-        <div class="nav">
+        <img src="logo.png" alt="Soluciones de Tráfico Logo" class="logo">
+        <div class="nav-links">
             <a href="#">Inicio</a>
             <a href="#">Quiénes somos</a>
             <a href="#">Productos</a>
@@ -98,17 +101,16 @@
             <a href="#">Aliados tecnológicos</a>
             <a href="#">Blog</a>
             <a href="#">Contáctenos</a>
-            <a href="#" class="lang">ES</a>
         </div>
+        <div class="lang-switch">ES | EN</div>
     </div>
-    <div class="main-content">
-        <div class="overlay"></div>
-        <h1>conoce<br>sobre<br>nosotros</h1>
-        <p>Creamos en ciudades que se mueven mejor cuando la tecnología está al servicio de las personas. Por eso, trabajamos para hacer realidad una movilidad que sea inteligente, segura, eficiente y sostenible.</p>
-        <p>Somos una empresa colombiana 26 años de trayectoria en el desarrollo e implementación de soluciones ITS (Intelligent Traffic Systems), respaldada por un equipo de profesionales altamente calificados y comprometidos con la transformación de la movilidad en el país.</p>
-        <p>Representantes en Colombia a compañías internacionales líderes y especialistas en tecnología para la gestión del tránsito, urbano e interurbano, actuando como distribuidores autorizados y aliados estratégicos para instituciones públicas y privadas que buscan soluciones integrales, confiables y de alta calidad.</p>
-        <img src="https://via.placeholder.com/600x300" alt="Team Photo" class="team-photo">
-        <button class="button">¡Hablemos!</button>
+    <div class="content">
+        <h1 class="title">conoce sobre nosotros</h1>
+        <p class="description">
+            Creamos en ciudades que se mueven mejor cuando la tecnología está al servicio de las personas. Por eso, trabajamos para hacer realidad una movilidad que sea inteligente, segura, eficiente y sostenible. Somos una empresa colombiana 26 años de trayectoria en el desarrollo e implementación de soluciones ITS (Intelligent Traffic Systems), respaldada por un equipo de profesionales altamente calificados y comprometidos con la transformación de la movilidad en el país. Representantes en Colombia a compañías internacionales líderes y especialistas en tecnología para la gestión del tránsito, urbano e interurbano, actuando como distribuidores autorizados y aliados estratégicos para instituciones públicas y privadas que buscan soluciones integrales, confiables y de alta calidad.
+        </p>
+        <img src="team-photo.jpg" alt="Team Photo" class="team-image">
+        <button class="cta-button">¡Hablemos!</button>
     </div>
 </body>
 </html>
