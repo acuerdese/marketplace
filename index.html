@@ -5,95 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Soluciones de Tráfico</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
         body {
             margin: 0;
-            font-family: 'Arial', sans-serif;
-            color: #333;
-            background: linear-gradient(to bottom, #f5f7fa, #e0e7f0);
+            padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            color: #003087;
         }
         .header {
-            background: #1a2e5a;
-            padding: 10px 20px;
+            background: #003087;
+            color: white;
+            padding: 10px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: relative;
-            z-index: 10;
+            z-index: 2;
         }
-        .logo {
-            height: 40px;
+        .header .logo {
+            font-family: 'Roboto', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
         }
-        .nav-links a {
-            color: #fff;
+        .logo span {
+            color: #ffcc00;
+        }
+        .nav a {
+            color: white;
             text-decoration: none;
             margin-left: 20px;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 400;
+            transition: color 0.3s;
         }
-        .nav-links a:hover {
-            text-decoration: underline;
+        .nav a:hover {
+            color: #ffcc00;
         }
-        .lang-switch {
-            color: #fff;
-            font-size: 14px;
-            cursor: pointer;
+        .nav .lang {
+            font-weight: 700;
+            border: 1px solid white;
+            padding: 2px 8px;
+            border-radius: 3px;
         }
-        .content {
+        .main-content {
             position: relative;
             text-align: center;
-            padding: 50px 20px;
-            background: url('background-image.jpg') no-repeat center top;
+            padding: 60px 20px;
+            background: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center;
             background-size: cover;
-            min-height: 600px;
+            min-height: 700px;
+            overflow: hidden;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+            z-index: 0;
+        }
+        .title-container {
+            position: relative;
+            z-index: 1;
         }
         .title {
+            font-family: 'Roboto', sans-serif;
             font-size: 72px;
-            font-weight: bold;
-            color: #1a2e5a;
+            font-weight: 700;
+            color: #003087;
+            margin: 0;
+            line-height: 0.9;
             text-transform: uppercase;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.8);
+            background: #fff;
             display: inline-block;
             padding: 10px 20px;
-            border-radius: 50px;
+            border-radius: 20px;
+            clip-path: ellipse(50% 60% at 50% 50%);
         }
-        .description {
-            font-size: 18px;
-            color: #333;
+        .text-content {
+            position: relative;
+            z-index: 1;
             max-width: 600px;
-            margin: 0 auto 30px;
-            line-height: 1.5;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 10px;
-        }
-        .team-image {
-            max-width: 80%;
-            border-radius: 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-top: 20px;
-        }
-        .cta-button {
-            background: #f4a900;
+            margin: 30px auto;
+            font-size: 16px;
+            line-height: 1.6;
             color: #fff;
+        }
+        .text-content p {
+            margin: 15px 0;
+        }
+        .team-photo {
+            position: relative;
+            z-index: 1;
+            max-width: 80%;
+            height: auto;
+            border-radius: 20px;
+            clip-path: ellipse(70% 60% at 50% 50%);
+            margin-top: 30px;
+        }
+        .button {
+            background: #ffcc00;
+            color: #003087;
+            border: none;
             padding: 15px 30px;
             font-size: 18px;
-            font-weight: bold;
-            border: none;
+            font-weight: 700;
             border-radius: 50px;
             cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 0 4px 8px rgba(244, 169, 0, 0.5);
+            margin-top: 30px;
+            transition: background 0.3s;
+            position: relative;
+            z-index: 1;
         }
-        .cta-button:hover {
-            background: #e59400;
+        .button:hover {
+            background: #e6b800;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <img src="logo.png" alt="Soluciones de Tráfico Logo" class="logo">
-        <div class="nav-links">
+        <div class="logo">soluciones<span>de tráfico</span></div>
+        <div class="nav">
             <a href="#">Inicio</a>
             <a href="#">Quiénes somos</a>
             <a href="#">Productos</a>
@@ -101,16 +134,21 @@
             <a href="#">Aliados tecnológicos</a>
             <a href="#">Blog</a>
             <a href="#">Contáctenos</a>
+            <a href="#" class="lang">ES</a>
         </div>
-        <div class="lang-switch">ES | EN</div>
     </div>
-    <div class="content">
-        <h1 class="title">conoce sobre nosotros</h1>
-        <p class="description">
-            Creamos en ciudades que se mueven mejor cuando la tecnología está al servicio de las personas. Por eso, trabajamos para hacer realidad una movilidad que sea inteligente, segura, eficiente y sostenible. Somos una empresa colombiana 26 años de trayectoria en el desarrollo e implementación de soluciones ITS (Intelligent Traffic Systems), respaldada por un equipo de profesionales altamente calificados y comprometidos con la transformación de la movilidad en el país. Representantes en Colombia a compañías internacionales líderes y especialistas en tecnología para la gestión del tránsito, urbano e interurbano, actuando como distribuidores autorizados y aliados estratégicos para instituciones públicas y privadas que buscan soluciones integrales, confiables y de alta calidad.
-        </p>
-        <img src="team-photo.jpg" alt="Team Photo" class="team-image">
-        <button class="cta-button">¡Hablemos!</button>
+    <div class="main-content">
+        <div class="overlay"></div>
+        <div class="title-container">
+            <h1 class="title">conoce<br>sobre<br>nosotros</h1>
+        </div>
+        <div class="text-content">
+            <p>Creamos en ciudades que se mueven mejor cuando la tecnología está al servicio de las personas. Por eso, trabajamos para hacer realidad una movilidad que sea inteligente, segura, eficiente y sostenible.</p>
+            <p>Somos una empresa colombiana 26 años de trayectoria en el desarrollo e implementación de soluciones ITS (Intelligent Traffic Systems), respaldada por un equipo de profesionales altamente calificados y comprometidos con la transformación de la movilidad en el país.</p>
+            <p>Representantes en Colombia a compañías internacionales líderes y especialistas en tecnología para la gestión del tránsito, urbano e interurbano, actuando como distribuidores autorizados y aliados estratégicos para instituciones públicas y privadas que buscan soluciones integrales, confiables y de alta calidad.</p>
+        </div>
+        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Team Photo" class="team-photo">
+        <button class="button">¡Hablemos!</button>
     </div>
 </body>
 </html>
