@@ -412,10 +412,10 @@
         <closing>Con cada proyecto, <b>reafirmamos nuestro compromiso</b> con una movilidad <b>inteligente, segura, incluyente y sostenible</b>, integrando tecnología, conocimiento y servicio al desarrollo del país.</closing>
       </experience>
       <carousel>
-        <image src="https://images.unsplash.com/photo-1493529932082-3ea4e81a1a43?q=80&w=1600&auto=format&fit=crop" alt="Centro de control"/>
-        <image src="https://images.unsplash.com/photo-1551301622-6fa8c2a0e201?q=80&w=1600&auto=format&fit=crop" alt="Cruce urbano"/>
-        <image src="https://images.unsplash.com/photo-1528901166007-3784c7dd3653?q=80&w=1600&auto=format&fit=crop" alt="Velocidad controlada"/>
-        <image src="https://images.unsplash.com/photo-1531973968078-9bb02785f13d?q=80&w=1600&auto=format&fit=crop" alt="Peatones y movilidad"/>
+        <image src="https://source.unsplash.com/1200x800/?traffic,city&amp;sig=1" alt="Centro de control"/>
+        <image src="https://source.unsplash.com/1200x800/?intersection,street&amp;sig=2" alt="Intersección urbana"/>
+        <image src="https://source.unsplash.com/1200x800/?infrastructure,traffic&amp;sig=3" alt="Infraestructura inteligente"/>
+        <image src="https://source.unsplash.com/1200x800/?cyclists,street&amp;sig=4" alt="Ciclistas y movilidad sostenible"/>
       </carousel>
       <newsletter>
         <title>Suscríbete</title>
@@ -571,27 +571,76 @@
     }
 
     // ---------------- Carousel logic ----------------
-    let index = 0; let slides = []; let dotsEls = [];
+    let index = 0;
+    let slides = [];
+    let dotsEls = [];
+    let observer = null;
 
     function initCarousel(){
-      slides = Array.from(document.querySelectorAll('#track .slide'));
-      dotsEls = Array.from(document.querySelectorAll('#dots button'));
+      const track = document.getElementById('track');
+      if(!track) return;
+
+      slides = Array.from(track.querySelectorAll('.slide'));
+      const dotsContainer = document.getElementById('dots');
+      dotsEls = dotsContainer ? Array.from(dotsContainer.querySelectorAll('button')) : [];
+
+      // create dots if they don't match the number of slides
+      if(dotsContainer && dotsEls.length !== slides.length){
+        dotsContainer.innerHTML = '';
+        slides.forEach((s,i)=>{
+          const dot = document.createElement('button');
+          dot.setAttribute('aria-label', 'Ir a la imagen ' + (i+1));
+          dot.addEventListener('click', ()=> go(i));
+          dotsContainer.appendChild(dot);
+        });
+        dotsEls = Array.from(dotsContainer.querySelectorAll('button'));
+      }
+
+      // prev / next
+      const prev = document.getElementById('prev');
+      const next = document.getElementById('next');
+      if(prev) prev.onclick = ()=> go(index-1);
+      if(next) next.onclick = ()=> go(index+1);
+
+      // observe slides to know which one is visible
+      if(observer) observer.disconnect();
+      observer = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            const newIndex = slides.indexOf(entry.target);
+            if(newIndex !== -1){ index = newIndex; updateDots(); }
+          }
+        });
+      }, { root: track, threshold: 0.55 });
+
+      slides.forEach(s=> observer.observe(s));
+
+      // make sure slides have proper attributes for accessibility
+      slides.forEach((s,i)=>{
+        s.setAttribute('role','group');
+        s.setAttribute('aria-roledescription','slide');
+        s.setAttribute('aria-label', (i+1) + ' de ' + slides.length);
+      });
+
       updateDots();
-      document.getElementById('prev').onclick = () => go(index-1);
-      document.getElementById('next').onclick = () => go(index+1);
-      document.getElementById('track').addEventListener('scroll', syncByScroll);
     }
+
     function go(i){
       if(!slides.length) return;
-      index = (i+slides.length)%slides.length;
-      slides[index].scrollIntoView({behavior:'smooth'});
+      index = (i + slides.length) % slides.length;
+      slides[index].scrollIntoView({behavior:'smooth', inline:'start'});
       updateDots();
     }
-    function syncByScroll(){
-      const t = document.getElementById('track');
-      const w = t.clientWidth; index = Math.round(t.scrollLeft / w); updateDots();
+
+    function updateDots(){
+      dotsEls.forEach((d,i)=> d.classList.toggle('active', i===index));
     }
-    function updateDots(){ dotsEls.forEach((d, i)=> d.classList.toggle('active', i===index)); }
+
+    // keyboard support
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'ArrowLeft') go(index-1);
+      if(e.key === 'ArrowRight') go(index+1);
+    });
 
     // Render al cargar
     document.addEventListener('DOMContentLoaded', fromXML);
