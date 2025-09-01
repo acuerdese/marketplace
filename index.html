@@ -1,153 +1,463 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Soluciones sabrosas?</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Replica - Soluciones de Tráfico (Responsive Demo)</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+
   <style>
-    :root {
-      --navy: #0a1f44;
-      --yellow: #fecd1a;
-      --gray: #f5f7fa;
+    :root{
+      --navy:#07263d;
+      --midblue:#144b6b;
+      --softblue:#eaf4f9;
+      --accent:#f6bf00; /* yellow */
+      --muted:#6a7b86;
+      --card:#f6f9fb;
+      --maxWidth:1200px;
+      --container-padding:24px;
+      --radius:18px;
+      --glass: rgba(255,255,255,0.06);
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    *{box-sizing:border-box}
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family: 'Open Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      color:#233442;
+      background:var(--softblue);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.5;
     }
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      line-height: 1.6;
-      color: var(--navy);
-      background: white;
+    .container{max-width:var(--maxWidth);margin:0 auto;padding:0 var(--container-padding)}
+
+    /* SVG defs are included later to provide clipPaths */
+
+    /* Header */
+    .site-header{background:linear-gradient(180deg, rgba(7,38,61,0.95), rgba(7,38,61,0.95)); color:white;}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+
+    .logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:white}
+    .logo img{height:36px}
+    .logo .brand{font-family:'Montserrat';font-weight:700}
+
+    nav.main-nav ul{display:flex;gap:18px;align-items:center;margin:0;padding:0;list-style:none}
+    nav.main-nav a{color:rgba(255,255,255,0.9);text-decoration:none;font-weight:600;font-size:15px}
+
+    .cta-btn{background:var(--accent);color:var(--navy);padding:10px 16px;border-radius:24px;font-weight:700;text-decoration:none;border:none;cursor:pointer}
+
+    /* Burger */
+    .burger{display:none;background:none;border:0;color:white}
+    .burger .lines{width:28px;height:2px;background:white;display:block;position:relative}
+    .burger .lines:before, .burger .lines:after{content:'';position:absolute;height:2px;background:white;left:0;right:0}
+    .burger .lines:before{top:-8px}
+    .burger .lines:after{top:8px}
+
+    /* Hero / About */
+    section{padding:64px 0}
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:36px;align-items:center}
+    .hero .intro{background:transparent;padding:20px 0}
+    .eyebrow{font-family:'Montserrat';text-transform:uppercase;color:var(--muted);letter-spacing:1px;font-weight:700}
+    h1.title{font-family:'Montserrat';font-size:44px;line-height:1.02;margin:14px 0;color:var(--navy)}
+    .title .accent{display:inline-block;color:var(--accent);}
+    .hero p.lead{color:var(--muted);max-width:66ch}
+    .hero .cta{margin-top:18px}
+
+    /* Blob image box */
+    .blob-wrap{position:relative;width:100%;height:100%}
+    .blob-bg{position:absolute;right:0;top:0;width:100%;height:100%;pointer-events:none}
+    .blob-img{display:block;width:420px;height:320px;border-radius:24px;object-fit:cover;position:relative;overflow:hidden}
+    .blob-img figure{margin:0;position:relative}
+    .blob-img img{width:100%;height:100%;object-fit:cover;display:block}
+
+    /* We'll mask using SVG clipPaths */
+    .masked{clip-path:url(#blob1);-webkit-clip-path:url(#blob1);}
+
+    /* Duotone overlay technique: grayscale + multiply overlay */
+    .duotone{filter:grayscale(1) contrast(1.05) brightness(0.95);position:relative}
+    .duotone::after{content:"";position:absolute;inset:0;background:var(--midblue);mix-blend-mode:multiply;opacity:0.8;pointer-events:none}
+
+    /* Mid section dark band */
+    .darkband{background:linear-gradient(180deg,var(--navy),#0d3e59);color:white;padding:42px 0;border-radius:24px}
+    .darkband .blob-yellow{background:var(--accent);color:var(--navy);padding:26px;border-radius:26px;width:240px;text-align:center;font-family:'Montserrat';font-weight:700}
+    .darkband p{color:rgba(255,255,255,0.9)}
+
+    /* Stats cards */
+    .stats{display:flex;gap:18px;flex-wrap:wrap;margin-top:28px}
+    .stat{flex:1 1 160px;padding:18px;border-radius:14px;background:white;box-shadow:0 6px 18px rgba(2,6,23,0.06);text-align:center}
+    .stat strong{display:block;font-size:28px;color:var(--navy)}
+    .stat span{display:block;color:var(--muted)}
+
+    /* Carousel */
+    .carousel-wrap{display:flex;justify-content:center;padding:36px 0}
+    .carousel{width:800px;max-width:90%;height:300px;border-radius:12px;overflow:hidden;position:relative;box-shadow:0 10px 30px rgba(2,6,23,0.12)}
+    .slides{display:flex;transition:transform .6s ease;height:100%}
+    .slide{min-width:100%;height:100%;position:relative}
+    .slide img{width:100%;height:100%;object-fit:cover}
+    .carousel .controls{position:absolute;left:12px;right:12px;top:50%;transform:translateY(-50%);display:flex;justify-content:space-between;pointer-events:none}
+    .ctrl{background:rgba(255,255,255,0.9);border-radius:999px;padding:8px;pointer-events:all;border:0}
+
+    /* Footer */
+    footer{background:linear-gradient(180deg,#07263d,#042235);color:#d7e6ef;padding:44px 0;border-top-left-radius:28px;border-top-right-radius:28px}
+    .footer-inner{display:grid;grid-template-columns:1fr 320px;gap:36px;align-items:start}
+    .newsletter input{padding:12px;border-radius:999px;border:0;width:60%;max-width:320px}
+
+    /* WhatsApp floating */
+    .whatsapp-fab{position:fixed;right:18px;bottom:18px;background:var(--accent);width:60px;height:60px;border-radius:999px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(0,0,0,0.25);z-index:999}
+    .whatsapp-fab a{display:block;color:var(--navy);font-size:22px}
+
+    /* Fade-in animation */
+    .fade-item{opacity:0;transform:translateY(18px);transition:opacity .7s ease, transform .7s ease}
+    .fade-item.in-view{opacity:1;transform:none}
+
+    /* Mobile */
+    @media (max-width:991px){
+      .hero{grid-template-columns:1fr;gap:18px}
+      nav.main-nav{display:none}
+      .burger{display:block}
+      .site-header{position:relative}
+      .site-header.fixed{position:static}
+      .blob-img{width:100%;height:260px}
+      .footer-inner{grid-template-columns:1fr}
     }
 
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: var(--navy);
-      color: white;
-      z-index: 1000;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    /* Desktop: fixed header */
+    @media (min-width:992px){
+      .site-header.fixed{position:fixed;top:0;left:0;right:0;z-index:999;padding:12px 0}
+      body{padding-top:72px}
     }
 
-    .nav-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 2rem;
-    }
+    /* small details */
+    .muted{color:var(--muted)}
+    .kicker{font-family:'Montserrat';font-weight:700;color:var(--accent)}
+    .pill{display:inline-block;padding:8px 14px;border-radius:999px;background:var(--accent);color:var(--navy);font-weight:700}
 
-    .logo {
-      font-weight: 700;
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-    }
+    /* Mobile nav overlay */
+    .mobile-nav{position:fixed;inset:0;background:rgba(7,38,61,0.98);color:white;display:none;flex-direction:column;padding:60px 24px;z-index:999}
+    .mobile-nav.show{display:flex}
+    .mobile-nav a{color:white;text-decoration:none;margin:12px 0;font-size:20px}
 
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    nav ul li a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
-
-    nav ul li a:hover {
-      color: var(--yellow);
-    }
-
-    .burger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-    }
-
-    .burger span {
-      width: 25px;
-      height: 3px;
-      background: white;
-    }
-
-    @media(max-width: 900px){
-      nav ul {
-        display: none;
-      }
-      .burger {
-        display: flex;
-      }
-    }
-
-    section {
-      padding: 120px 20px 60px; /* top padding increased for fixed header */
-      max-width: 1200px;
-      margin: 0 auto;
-    }
   </style>
 </head>
 <body>
-  <header>
-    <div class="nav-container">
-      <div class="logo">Soluciones de Tráfico</div>
-      <nav>
+
+  <!-- SVG defs for clipPaths and shapes -->
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <!-- organic blob used to clip images -->
+      <clipPath id="blob1" clipPathUnits="objectBoundingBox">
+        <path d="M0.197,0.117 C0.29,-0.038,0.554,-0.04,0.76,0.025 C0.95,0.089,1.004,0.358,0.943,0.558 C0.883,0.758,0.675,0.956,0.468,0.965 C0.25,0.975,0.057,0.872,0.012,0.694 C-0.033,0.517,0.104,0.277,0.197,0.117 Z" />
+      </clipPath>
+
+      <!-- another blob for variety -->
+      <clipPath id="blob2" clipPathUnits="objectBoundingBox">
+        <path d="M0.1,0.3 C0.15,0.05,0.4,0,0.62,0.08 C0.84,0.16,0.98,0.38,0.9,0.6 C0.82,0.82,0.6,0.95,0.38,0.93 C0.16,0.9,0.02,0.6,0.1,0.3 Z" />
+      </clipPath>
+    </defs>
+  </svg>
+
+  <header class="site-header fixed" role="banner">
+    <div class="container header-inner">
+      <a href="#inicio" class="logo" aria-label="Ir al inicio">
+        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='36'><rect rx='6' width='140' height='36' fill='%2307223A'/><text x='14' y='23' font-family='Montserrat' font-weight='700' font-size='14' fill='%23FFD24D'>Soluciones</text><text x='14' y='34' font-family='Open Sans' font-size='12' fill='white'>de tráfico</text></svg>" alt="logo" />
+      </a>
+
+      <nav class="main-nav" role="navigation" aria-label="Main">
         <ul>
-          <li><a href="#home">Inicio</a></li>
-          <li><a href="#about">Quiénes somos</a></li>
-          <li><a href="#products">Productos</a></li>
-          <li><a href="#services">Nuestros servicios</a></li>
-          <li><a href="#partners">Aliados tecnológicos</a></li>
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#quienes">Quiénes somos</a></li>
+          <li><a href="#productos">Productos</a></li>
+          <li><a href="#servicios">Nuestros servicios</a></li>
+          <li><a href="#aliados">Aliados tecnológicos</a></li>
           <li><a href="#blog">Blog</a></li>
-          <li><a href="#contact">Contáctenos</a></li>
         </ul>
       </nav>
-      <div class="burger">
-        <span></span>
-        <span></span>
-        <span></span>
+
+      <div style="display:flex;align-items:center;gap:12px">
+        <a href="#contacto" class="cta-btn">Contáctenos</a>
+        <button class="burger" aria-expanded="false" aria-controls="mobile-nav" id="burgerBtn"><span class="lines"></span></button>
       </div>
     </div>
   </header>
 
-  <section id="home">
-    <h1>Bienvenido a Soluciones de Tráfico</h1>
-    <p>Contenido de ejemplo...</p>
-  </section>
-  <section id="about">
-    <h2>Sobre nosotros</h2>
-    <p>Contenido de ejemplo...</p>
-  </section>
-  <section id="products">
-    <h2>Productos</h2>
-    <p>Contenido de ejemplo...</p>
-  </section>
-  <section id="services">
-    <h2>Servicios</h2>
-    <p>Contenido de ejemplo...</p>
-  </section>
-  <section id="partners">
-    <h2>Aliados tecnológicos</h2>
-    <p>Contenido de ejemplo...</p>
-  </section>
-  <section id="blog">
-    <h2>Blog</h2>
-    <p>Contenido de ejemplo...</p>
-  </section>
-  <section id="contact">
-    <h2>Contacto</h2>
-    <p>Contenido de ejemplo...</p>
-  </section>
+  <!-- Mobile nav overlay -->
+  <div id="mobile-nav" class="mobile-nav" role="dialog" aria-modal="true" aria-hidden="true">
+    <a href="#inicio">Inicio</a>
+    <a href="#quienes">Quiénes somos</a>
+    <a href="#productos">Productos</a>
+    <a href="#servicios">Nuestros servicios</a>
+    <a href="#aliados">Aliados tecnológicos</a>
+    <a href="#blog">Blog</a>
+    <a href="#contacto" class="pill" style="margin-top:18px;max-width:200px;text-align:center">Contáctenos</a>
+    <button onclick="toggleMobile(false)" style="margin-top:28px;padding:12px;border-radius:8px;border:0;background:transparent;color:var(--accent)">Cerrar</button>
+  </div>
+
+  <main>
+
+    <!-- Hero / About Section -->
+    <section id="quienes" class="container hero fade-item" aria-labelledby="about-title">
+      <div class="intro">
+        <div class="eyebrow" data-content-id="eyebrow">conoce</div>
+        <h1 class="title" id="about-title" data-content-id="hero.title">sobre <span class="accent">NOSOTROS</span></h1>
+        <p class="lead" data-content-id="hero.lead">Creemos en ciudades que se mueven mejor cuando la tecnología está al servicio de las personas. Por eso trabajamos para hacer realidad una movilidad que sea inteligente, segura, incluyente y sostenible.</p>
+
+        <div class="cta"><button class="cta-btn" data-content-id="hero.cta">
+          ¡Hablemos!
+        </button></div>
+      </div>
+
+      <div class="blob-wrap" aria-hidden="true">
+        <div style="position:relative;">
+          <div class="blob-img" style="width:420px;height:340px;border-radius:30px;overflow:hidden;">
+            <figure class="masked duotone" style="width:100%;height:100%">
+              <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=4a2d9b5d3b1f0beea5b1c30c801b8e21" alt="Equipo"/>
+            </figure>
+          </div>
+
+          <!-- yellow blob behind -->
+          <div style="position:absolute;left:-30px;top:36px;width:320px;height:220px;background:var(--accent);border-radius:80px;z-index:-1;transform:rotate(-10deg);"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Dark band with three columns -->
+    <section class="container darkband fade-item" style="margin-top:24px;padding:40px">
+      <div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap">
+        <div class="blob-yellow">Soluciones con<br><span style="font-size:34px">sentido</span></div>
+        <div style="flex:1;min-width:260px">
+          <h3 style="margin:0;color:var(--accent)" data-content-id="band.title">Combinamos experiencia, innovación y conocimiento</h3>
+          <p data-content-id="band.text">Para optimizar el uso del espacio vial, facilitar la movilidad de peatones, ciclistas y vehículos, y ofrecer respuestas concretas a los desafíos urbanos y viales.</p>
+        </div>
+
+        <div style="min-width:260px">
+          <h3 style="margin:0;color:var(--accent)" data-content-id="band.title2">Nuestra razón de ser es clara</h3>
+          <p data-content-id="band.text2">Contribuir a construir ciudades más conectadas, accesibles y sostenibles, donde moverse sea más fácil, más seguro y más humano.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:18px;text-align:center;color:rgba(255,255,255,0.9)">¿Buscas soluciones para una movilidad más inteligente, segura, incluyente y sostenible? <br><a href="#contacto" style="color:var(--accent);text-decoration:none">Conversemos sobre cómo la tecnología puede transformar tu ciudad.</a></div>
+
+    </section>
+
+    <!-- Experience section with stats -->
+    <section id="experiencia" class="container fade-item" style="padding-top:48px">
+      <div style="display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:center">
+        <div>
+          <h2 style="font-family:Montserrat;font-size:32px;margin:0 0 8px" data-content-id="exp.title">Experiencia que <span style="color:var(--navy)">respalda</span> soluciones reales</h2>
+          <p class="muted" data-content-id="exp.text">Durante más de dos décadas, hemos liderado con éxito proyectos en todo el país, aportando soluciones concretas en diseño, suministro, instalación, modernización, actualización y mantenimiento de redes semafóricas, dispositivos periféricos y centros de gestión de tráfico.
+          </p>
+
+          <div class="stats" aria-hidden="true">
+            <div class="stat" style="background:linear-gradient(180deg,#fff,#f7fbfd)">
+              <strong>26</strong>
+              <span>años de experiencia<br>en el sector ITS</span>
+            </div>
+            <div class="stat" style="background:linear-gradient(180deg,#dbeff7,#c6e8f6)">
+              <strong>3</strong>
+              <span>centrales de gestión de tráfico instaladas</span>
+            </div>
+            <div class="stat" style="background:linear-gradient(180deg,#e9f6f2,#dff1ec)">
+              <strong>19</strong>
+              <span>municipios con presencia activa</span>
+            </div>
+            <div class="stat" style="background:linear-gradient(180deg,#fff0cc,#fffde0)">
+              <strong>9 de 10</strong>
+              <span>municipios del Valle de Aburrá con cobertura</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="display:flex;justify-content:center">
+          <div class="blob-img" style="width:320px;height:360px;border-radius:28px;overflow:hidden">
+            <figure class="masked duotone" style="width:100%;height:100%">
+              <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop&s=2b8f9a6f1b5b3e6b2a8cd9f8e6b7d9a0" alt="Ingenieros" />
+            </figure>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Carousel before footer -->
+    <section class="carousel-wrap fade-item">
+      <div class="carousel" aria-label="Galería" role="region">
+        <div class="slides" id="slides">
+          <div class="slide"><img src="https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1600&auto=format&fit=crop&s=7b8c7a6cde4e7f3ea6a86b8dbd4c8a7b" alt="Foto 1"></div>
+          <div class="slide"><img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1600&auto=format&fit=crop&s=6a6c8d3f3b6a7e6b4f6c2d7a3f6b8e9d" alt="Foto 2"></div>
+          <div class="slide"><img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1600&auto=format&fit=crop&s=9c8f6b5a4d3c2b1e0f7a8c6d5e4f3a2b" alt="Foto 3"></div>
+        </div>
+
+        <div class="controls">
+          <button class="ctrl" id="prevBtn" aria-label="Anterior">◀</button>
+          <button class="ctrl" id="nextBtn" aria-label="Siguiente">▶</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer id="contacto">
+    <div class="container footer-inner">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48'><circle cx='24' cy='24' r='24' fill='%23FFD24D'/><text x='24' y='30' text-anchor='middle' font-family='Montserrat' font-weight='800' font-size='18' fill='%2307223A'>S</text></svg>" alt="logo" />
+          <div>
+            <div style="font-weight:700">Soluciones de Tráfico</div>
+            <div class="muted">Trabajamos por una movilidad más segura y humana</div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px">
+          <form class="newsletter" onsubmit="event.preventDefault(); alert('Gracias por suscribirte!')">
+            <label for="email" style="display:block;margin-bottom:6px;color:rgba(255,255,255,0.9)">Suscríbete a nuestro newsletter</label>
+            <input id="email" type="email" placeholder="Ingresa tu correo electrónico" aria-label="Correo electrónico">
+            <button type="submit" class="cta-btn" style="margin-left:10px">Enviar</button>
+          </form>
+        </div>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.03);padding:18px;border-radius:12px">
+        <h4 style="margin:0 0 8px">Contáctanos</h4>
+        <div style="font-size:14px;color:var(--muted);">Medellín - Colombia<br>Cra 82 # 49DD-32</div>
+        <div style="margin-top:10px"><strong>Whatsapp:</strong> +57 (317) 326 6027</div>
+        <div style="margin-top:6px"><strong>Email:</strong> info@solucionesdetrafico.co</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;color:rgba(255,255,255,0.6);padding:18px 0;font-size:13px">TODOS LOS DERECHOS RESERVADOS &copy; SOLUCIONES DE TR&Aacute;FICO S.A.S 2025</div>
+  </footer>
+
+  <!-- Floating WhatsApp -->
+  <div class="whatsapp-fab" aria-hidden="false">
+    <a href="https://wa.me/573173266027" target="_blank" rel="noopener" aria-label="Abrir WhatsApp">
+      <!-- simple WhatsApp SVG icon -->
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.52 3.48C18.07 1.03 14.77 0 11.44 0 5.28 0 .22 5.06.22 11.22c0 1.98.52 3.92 1.52 5.62L0 24l7.46-1.94c1.66.9 3.54 1.39 5.43 1.39 6.16 0 11.22-5.06 11.22-11.22 0-3.33-1.03-6.63-3.59-9.83v0z" fill="#07263D"/><path d="M17.1 14.06c-.3-.15-1.78-.88-2.06-.98-.28-.1-.48-.15-.68.15-.2.3-.78.98-.96 1.18-.18.2-.36.22-.66.07-.3-.15-1.25-.46-2.37-1.45-.88-.78-1.46-1.74-1.63-2.05-.17-.3 0-.46.13-.61.12-.12.28-.3.42-.45.14-.15.19-.26.3-.43.1-.17.05-.33-.02-.48-.08-.15-.68-1.63-.93-2.24-.24-.58-.49-.5-.67-.51-.18-.01-.38-.01-.58-.01-.2 0-.52.07-.8.3-.28.23-1.07 1.04-1.07 2.53 0 1.49 1.1 2.95 1.25 3.16.16.22 2.16 3.37 5.27 4.72 3.11 1.34 3.11.9 3.66.84.55-.06 1.78-.72 2.03-1.41.25-.69.25-1.28.18-1.41-.07-.12-.28-.2-.58-.35z" fill="#fff"/></svg>
+    </a>
+  </div>
+
+  <!-- Editable XML content: change this XML to update copy, labels and carousel images. The JS reads these nodes by id attributes. -->
+  <script type="application/xml" id="content-xml">
+    <site>
+      <item id="eyebrow">conoce</item>
+      <item id="hero.title">sobre <span class="accent">NOSOTROS</span></item>
+      <item id="hero.lead">Creemos en ciudades que se mueven mejor cuando la tecnología está al servicio de las personas. Por eso, trabajamos para hacer realidad una movilidad que sea inteligente, segura, incluyente y sostenible.</item>
+      <item id="hero.cta">¡Hablemos!</item>
+
+      <item id="band.title">Combinamos experiencia, innovación y conocimiento</item>
+      <item id="band.text">Para optimizar el uso del espacio vial, facilitar la movilidad de peatones, ciclistas y vehículos, y ofrecer respuestas concretas a los desafíos urbanos y viales.</item>
+      <item id="band.title2">Nuestra razón de ser es clara</item>
+      <item id="band.text2">Contribuir a construir ciudades más conectadas, accesibles y sostenibles, donde moverse sea más fácil, más seguro y más humano.</item>
+
+      <item id="exp.title">Experiencia que <span style="color:var(--navy)">respalda</span> soluciones reales</item>
+      <item id="exp.text">Durante más de dos décadas, hemos liderado con éxito proyectos en todo el país...</item>
+
+      <carousel>
+        <image id="c1" src="https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1600&auto=format&fit=crop&s=7b8c7a6cde4e7f3ea6a86b8dbd4c8a7b" alt="Imagen 1"/>
+        <image id="c2" src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1600&auto=format&fit=crop&s=6a6c8d3f3b6a7e6b4f6c2d7a3f6b8e9d" alt="Imagen 2"/>
+        <image id="c3" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1600&auto=format&fit=crop&s=9c8f6b5a4d3c2b1e0f7a8c6d5e4f3a2b" alt="Imagen 3"/>
+      </carousel>
+
+      <contact>
+        <phone>+57 (317) 326 6027</phone>
+        <email>info@solucionesdetrafico.co</email>
+        <address>Medellín - Colombia, Cra 82 # 49DD-32</address>
+      </contact>
+    </site>
+  </script>
+
+  <script>
+    // Smooth fade-in on scroll
+    (function(){
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting) e.target.classList.add('in-view');
+        });
+      },{threshold:0.12});
+      document.querySelectorAll('.fade-item').forEach(el=>io.observe(el));
+    })();
+
+    // Mobile navigation toggling
+    const burger = document.getElementById('burgerBtn');
+    function toggleMobile(show){
+      const nav = document.getElementById('mobile-nav');
+      if(show===undefined) show = !nav.classList.contains('show');
+      nav.classList.toggle('show', show);
+      nav.setAttribute('aria-hidden',!show);
+      burger.setAttribute('aria-expanded', show? 'true' : 'false');
+    }
+    burger.addEventListener('click', ()=> toggleMobile());
+
+    // Carousel logic
+    (function(){
+      const slides = document.getElementById('slides');
+      const total = slides.children.length;
+      let index = 0;
+      const prev = document.getElementById('prevBtn');
+      const next = document.getElementById('nextBtn');
+
+      function go(i){
+        index = (i + total) % total;
+        slides.style.transform = `translateX(-${index*100}%)`;
+      }
+      prev.addEventListener('click', ()=>go(index-1));
+      next.addEventListener('click', ()=>go(index+1));
+
+      // autoplay
+      let timer = setInterval(()=> go(index+1), 4500);
+      [prev,next].forEach(b=>b.addEventListener('click', ()=>{ clearInterval(timer); timer = setInterval(()=> go(index+1), 4500); }));
+    })();
+
+    // Read XML and populate the page
+    (function(){
+      const xmlText = document.getElementById('content-xml').textContent.trim();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(xmlText, 'application/xml');
+
+      // simple mapping: elements with data-content-id will be filled with <item id="..."> from xml
+      document.querySelectorAll('[data-content-id]').forEach(el=>{
+        const id = el.getAttribute('data-content-id');
+        const node = doc.querySelector(`item[id=\"${id}\"]`);
+        if(node){
+          el.innerHTML = node.textContent;
+        }
+      });
+
+      // carousel: replace slide images based on xml list
+      const imgs = doc.querySelectorAll('carousel > image');
+      if(imgs && imgs.length){
+        const slides = document.getElementById('slides');
+        slides.innerHTML = '';
+        imgs.forEach(i=>{
+          const src = i.getAttribute('src');
+          const alt = i.getAttribute('alt') || '';
+          const div = document.createElement('div');
+          div.className = 'slide';
+          const img = document.createElement('img');
+          img.src = src; img.alt = alt;
+          div.appendChild(img);
+          slides.appendChild(div);
+        });
+      }
+
+    })();
+
+    // Apply clip-path CSS for masked images (fallback for browsers that accept clip-path referencing SVG)
+    document.querySelectorAll('.masked img').forEach(img=>{
+      img.style.display = 'block';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+      // For browsers not supporting url(#id) in clip-path on HTML elements, we could use svg <image> instead.
+    });
+  </script>
+
 </body>
 </html>
