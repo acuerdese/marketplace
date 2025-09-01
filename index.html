@@ -3,69 +3,501 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Demo funcionamiento DOMParser + XML embebido</title>
-  <!-- Estilos básicos sólo de prueba -->
+  <title>Soluciones de Tráfico — Sobre Nosotros (Replica)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: sans-serif; margin: 2rem; }
-    .hero { padding: 1rem; background: #def; margin-bottom: 1rem; }
-    .gallery { background: #fde; padding: 1rem; margin-bottom: 1rem; }
+    :root{
+      --navy-900:#0a2740; /* deep navy */
+      --navy-800:#0f3552;
+      --navy-700:#123d60;
+      --navy-600:#164970;
+      --ink:#0d1b2a;
+      --bg:#f3f6fb;      
+      --card:#ffffff;
+      --muted:#7a8ca2;
+      --yellow:#f2c319;  
+      --pill:#173a57;
+      --shadow:0 20px 50px rgba(13,27,42,.15);
+      --radius-blob: 40% 60% 60% 40%/45% 41% 59% 55%;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:#0b1f33; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji", "Segoe UI Symbol";
+      line-height:1.5;
+    }
+    h1,h2,h3{font-family:Montserrat, Inter, sans-serif; margin:0 0 .5rem 0; color:#09233a}
+    h1{font-weight:900; letter-spacing:.2px}
+    h2{font-weight:800}
+    h3{font-weight:700}
+
+    /* ====== NAVBAR ====== */
+    .navbar{position:sticky; top:0; z-index:20; backdrop-filter:saturate(180%) blur(8px);}
+    .navbar-inner{max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:.6rem 1rem}
+    .nav-surface{background:linear-gradient(180deg, rgba(10,39,64,.92), rgba(10,39,64,.82)); border-bottom:1px solid rgba(255,255,255,.06)}
+    .brand{display:flex; align-items:center; gap:.75rem; color:#fff; text-decoration:none; font-weight:800}
+    .brand .mark{width:34px; height:34px; border-radius:8px; background:var(--yellow); display:grid; place-items:center; color:var(--ink); font-family:Montserrat; font-weight:900}
+    .nav-links{display:flex; gap:1.25rem; align-items:center}
+    .nav-links a{color:#e5eef6; text-decoration:none; font-weight:600; font-size:.95rem}
+    .nav-links a:hover{color:#fff}
+    .cta{background:#0e2841; color:#fff; border:1px solid rgba(255,255,255,.2); padding:.55rem .95rem; border-radius:999px; font-weight:700}
+    .cta.primary{background:var(--yellow); color:#0b1f33; border-color:transparent}
+
+    /* ====== HERO ====== */
+    .hero{position:relative; overflow:hidden; background:#0a2740}
+    .hero-bg{position:absolute; inset:0; z-index:-1}
+    .hero-bg img{width:100%; height:100%; object-fit:cover; filter:grayscale(100%) sepia(1) hue-rotate(350deg) saturate(5) brightness(1.15); opacity:.25}
+    .curve-top{position:absolute; left:0; right:0; top:0; height:60px; background:#0a2740}
+    .curve-bottom{position:absolute; left:0; right:0; bottom:-1px; height:64px; background:var(--bg); clip-path:path('M0,30 C150,90 300,0 500,40 C720,85 720,60 1000,30 L1000,120 0,120 Z')}
+
+    .hero-inner{max-width:1200px; margin:0 auto; padding:3.5rem 1rem 4.25rem; display:grid; grid-template-columns:1.1fr .9fr; gap:2.25rem; align-items:center}
+
+    .eyebrow-blob{max-width:560px; background:#113b59; color:#fff; border-radius:var(--radius-blob); padding:2rem 2rem 2.25rem 2rem; position:relative; box-shadow:var(--shadow)}
+    .eyebrow-blob .eyebrow{font-size:1rem; letter-spacing:.12em; text-transform:uppercase; opacity:.9}
+    .eyebrow-blob .title{font-family:Montserrat; font-weight:900; font-size:3rem; line-height:1; margin-top:.35rem}
+    .eyebrow-blob .title span{color:var(--yellow)}
+
+    .hero-copy{margin-top:1.25rem; color:#dfe9f2; max-width:560px}
+    .hero-copy p{margin:.6rem 0}
+    .hero-actions{margin-top:1.25rem}
+    .button{display:inline-flex; align-items:center; gap:.6rem; padding:.7rem 1rem; border-radius:999px; border:none; background:var(--yellow); color:#0b1f33; font-weight:800; cursor:pointer; box-shadow:0 12px 30px rgba(242,195,25,.35)}
+
+    .hero-media{position:relative}
+    .photo-blob{position:relative; width:100%; max-width:520px; margin:0 auto;}
+    .photo-blob::before{content:""; position:absolute; inset:-14px -18px auto auto; height:64%; width:74%; background:var(--yellow); border-radius:52% 48% 58% 42%/52% 48% 56% 44%; transform:rotate(-6deg); z-index:0; filter:drop-shadow(0 25px 50px rgba(242,195,25,.4));}
+    .photo-blob img{position:relative; z-index:1; width:100%; border-radius:46% 54% 44% 56%/56% 44% 56% 44%; box-shadow:var(--shadow)}
+
+    /* SVG duotone filter utility */
+    .duotone-blue-yellow{filter:url(#duoBlueYellow)}
+
+    /* ====== VALUE STRIP SECTION ====== */
+    .strip{position:relative; background:linear-gradient(180deg, #102f4a, #0d2740); color:#e9f2fb; overflow:hidden}
+    .strip::before{content:""; position:absolute; inset:0; background:url('https://images.unsplash.com/photo-1588072432836-e10032774350?q=80&w=1976&auto=format&fit=crop') center/cover no-repeat; opacity:.08; filter:grayscale(100%)}
+    .strip-inner{max-width:1200px; margin:0 auto; padding:3.25rem 1rem 3.75rem; display:grid; grid-template-columns: 1fr 1fr 1fr; gap:2rem; align-items:start}
+    .pill{background:var(--yellow); color:#0b1f33; border-radius:38% 62% 60% 40%/44% 42% 58% 56%; padding:1.75rem 1.5rem; font-family:Montserrat; font-weight:800; font-size:1.95rem; box-shadow:var(--shadow)}
+    .strip h3{color:#ffd761; margin-bottom:.45rem}
+    .muted{color:#c9d5e3}
+    .strip-cta{grid-column:1/-1; text-align:center; margin-top:1.5rem; font-size:1.05rem}
+    .strip-cta strong{color:#fff}
+    .strip-cta a{display:inline-block; margin-top:.6rem; padding:.6rem 1rem; border-radius:999px; background:rgba(255,255,255,.08); color:#fff; text-decoration:none; border:1px solid rgba(255,255,255,.18)}
+
+    /* ====== EXPERIENCE SECTION ====== */
+    .exp{position:relative; background:var(--bg)}
+    .exp-inner{max-width:1200px; margin:0 auto; padding:3.5rem 1rem}
+    .headline{font-size:2.4rem; line-height:1.05}
+    .headline span{display:block; color:var(--yellow)}
+    .exp-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:2rem; align-items:center; margin-top:1.25rem}
+    .exp-copy p{color:#3d546a; margin:.5rem 0}
+    .workers{position:relative; max-width:520px}
+    .workers::after{content:""; position:absolute; left:-20px; right:-20px; bottom:-18px; height:80px; background:#fff; border-radius:100% 100% 0 0/100% 100% 0 0; filter:blur(10px); opacity:.35;}
+    .workers img{width:100%; border-radius:58% 42% 52% 48%/48% 56% 44% 56%; box-shadow:var(--shadow)}
+
+    /* ====== STATS ====== */
+    .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-top:2rem}
+    .stat{background:#fff; border-radius:22px; padding:1.25rem 1.1rem; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:.4rem}
+    .stat:nth-child(1){background:linear-gradient(180deg,#ffe07a,#ffd24b)}
+    .stat:nth-child(2){background:linear-gradient(180deg,#1b4064,#122b46); color:#e2ecf6}
+    .stat:nth-child(3){background:linear-gradient(180deg,#dbf2ff,#aee2ff)}
+    .stat:nth-child(4){background:linear-gradient(180deg,#ffef9d,#ffd24b)}
+    .stat .num{font-family:Montserrat; font-weight:900; font-size:2.2rem}
+    .stat small{font-weight:700}
+
+    .reaffirm{margin-top:1.6rem; text-align:center; color:#435a70}
+    .reaffirm strong{color:#0b2c48}
+
+    /* ====== CAROUSEL ====== */
+    .carousel{position:relative; background:linear-gradient(180deg, #0d2740, #0f2f47); color:#fff; overflow:hidden;}
+    .carousel-inner{max-width:1200px; margin:0 auto; padding:3.25rem 1rem 3.5rem}
+    .carousel h2{color:#fff; font-size:2rem; margin-bottom:1rem}
+    .viewport{position:relative; overflow:hidden; border-radius:20px}
+    .track{display:flex; transition:transform .6s cubic-bezier(.2,.7,.2,1); will-change:transform}
+    .slide{min-width:100%; position:relative}
+    .slide img{width:100%; height:480px; object-fit:cover; display:block; filter:url(#duoBlueYellow)}
+    .controls{display:flex; align-items:center; justify-content:center; gap:.5rem; margin-top:1rem}
+    .arrow{background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.22); backdrop-filter:blur(6px); color:#fff; border-radius:999px; padding:.6rem .85rem; cursor:pointer}
+    .dots{display:flex; gap:.4rem; margin-left:.5rem}
+    .dots button{width:9px; height:9px; border-radius:50%; border:1px solid rgba(255,255,255,.6); background:transparent; cursor:pointer}
+    .dots button.active{background:#fff}
+
+    /* ====== NEWSLETTER & FOOTER ====== */
+    .newsletter{background:#081f33; color:#e7eef6; position:relative; overflow:hidden}
+    .newsletter-inner{max-width:1200px; margin:0 auto; padding:3rem 1rem}
+    .newsletter .card{background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:20px; padding:1.5rem; box-shadow:var(--shadow)}
+    .newsletter h3{color:#ffd761}
+    .nl-form{display:flex; gap:.5rem; margin-top:1rem}
+    .nl-form input{flex:1; padding:.8rem 1rem; border-radius:999px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06); color:#fff}
+    .nl-form button{padding:.8rem 1.1rem; border-radius:999px; border:none; background:var(--yellow); color:#0b1f33; font-weight:800}
+
+    footer{background:#061726; color:#c4d2e2}
+    .footer-inner{max-width:1200px; margin:0 auto; padding:2.5rem 1rem 3rem; display:grid; grid-template-columns:2fr 1fr 1.4fr; gap:2rem}
+    .logo-foot{display:flex; gap:.8rem; align-items:center}
+    .logo-foot .mark{width:36px; height:36px; border-radius:8px; background:var(--yellow); display:grid; place-items:center; color:#0b1f33; font-family:Montserrat; font-weight:900}
+    .menu a{display:block; color:#e6eef5; text-decoration:none; margin:.35rem 0}
+    .menu a:hover{color:#fff}
+    .contact-card{border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:1rem; background:rgba(255,255,255,.03)}
+    .legal{border-top:1px solid rgba(255,255,255,.09); margin-top:1.25rem; padding-top:1rem; font-size:.9rem; color:#a8bacf; text-align:center}
+
+    /* ====== RESPONSIVE ====== */
+    @media (max-width: 1024px){
+      .hero-inner{grid-template-columns:1fr; text-align:left}
+      .strip-inner{grid-template-columns:1fr;}
+      .exp-grid{grid-template-columns:1fr;}
+      .stats{grid-template-columns:1fr 1fr}
+      .slide img{height:360px}
+      .footer-inner{grid-template-columns:1fr}
+    }
   </style>
 </head>
 <body>
-  <div class="hero">
-    <h1 data-cms="hero.title">Título por defecto</h1>
-    <p data-cms="hero.subtitle">Subtítulo por defecto</p>
+  <!-- ======= SVG FILTERS (Duotone: Navy/Yellow) ======= -->
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="duoBlueYellow">
+      <!-- 1) Convert to grayscale -->
+      <feColorMatrix type="matrix" values="0.33 0.34 0.33 0 0  0.33 0.34 0.33 0 0  0.33 0.34 0.33 0 0  0 0 0 1 0"/>
+      <!-- 2) Map dark->navy(10,58,87) & light->yellow(248,201,10) -->
+      <feComponentTransfer color-interpolation-filters="sRGB">
+        <feFuncR type="table" tableValues="0.039 0.972"/>
+        <feFuncG type="table" tableValues="0.227 0.788"/>
+        <feFuncB type="table" tableValues="0.341 0.039"/>
+      </feComponentTransfer>
+    </filter>
+  </svg>
+
+  <!-- ======= NAV ======= -->
+  <div class="navbar nav-surface">
+    <div class="navbar-inner">
+      <a href="#" class="brand" aria-label="Soluciones de Tráfico - Inicio">
+        <span class="mark">S</span>
+        <span>soluciones <strong>de tráfico</strong></span>
+      </a>
+      <nav class="nav-links" aria-label="principal">
+        <a href="#inicio" data-bind="nav>inicio">Inicio</a>
+        <a href="#quienes" data-bind="nav>quienes">Quiénes somos</a>
+        <a href="#productos" data-bind="nav>productos">Productos</a>
+        <a href="#servicios" data-bind="nav>servicios">Nuestros servicios</a>
+        <a href="#aliados" data-bind="nav>aliados">Aliados tecnológicos</a>
+        <a href="#blog" data-bind="nav>blog">Blog</a>
+        <a class="cta primary" href="#contacto" data-bind="nav>contacto">Contáctenos</a>
+        <a class="cta" href="#lang" data-bind="nav>idioma">ES | EN</a>
+      </nav>
+    </div>
   </div>
 
-  <div class="gallery">
-    <h2 data-cms="gallery.title">Galería por defecto</h2>
-    <img data-cms-img="gallery.img1" src="" alt="Imagen 1" width="200">
-  </div>
+  <!-- ======= HERO ======= -->
+  <header class="hero" id="inicio">
+    <div class="hero-bg" aria-hidden="true">
+      <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=1976&auto=format&fit=crop" alt="Fondo de ciudad con tráfico" />
+      <div class="curve-bottom" aria-hidden="true"></div>
+    </div>
 
-  <!-- Bloque XML embebido (aquí editas) -->
-  <script type="application/xml" id="cms-data"><site>
-  <hero>
-    <title>¡Carga exitosa!</title>
-    <subtitle>Este contenido vino del XML embebido.</subtitle>
-  </hero>
-  <gallery>
-    <title>Nuestra galería desde XML</title>
-    <img1>https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=260</img1>
-  </gallery>
-</site></script>
+    <div class="hero-inner">
+      <div>
+        <div class="eyebrow-blob">
+          <div class="eyebrow" data-bind="hero>eyebrow">conoce</div>
+          <div class="title"><span data-bind="hero>sobreLabel">sobre</span> <span data-bind="hero>nosotrosLabel" style="color:var(--yellow)">NOSOTROS</span></div>
+        </div>
+        <div class="hero-copy">
+          <p data-bind="hero>p1">Creemos en ciudades que se mueven mejor cuando la tecnología está al servicio de las personas. Por eso, trabajamos para hacer realidad una movilidad que sea inteligente, segura, incluyente y sostenible.</p>
+          <p data-bind="hero>p2">Somos una empresa colombiana con trayectoria en soluciones ITS (Intelligent Traffic Systems), respaldada por un equipo altamente calificado y comprometido con la transformación de la movilidad.</p>
+          <div class="hero-actions">
+            <button class="button" data-bind="hero>cta">¡Hablemos!</button>
+          </div>
+        </div>
+      </div>
 
+      <div class="hero-media">
+        <figure class="photo-blob">
+          <img class="duotone-blue-yellow" data-src="hero>image" alt="Equipo de trabajo" src="https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=1974&auto=format&fit=crop"/>
+        </figure>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======= VALUE STRIP ======= -->
+  <section class="strip" id="quienes">
+    <div class="strip-inner">
+      <div class="pill" data-bind="values>pill">Soluciones con<br/>sentido</div>
+      <div>
+        <h3 data-bind="values>col1>h">Combinamos experiencia, innovación y conocimiento</h3>
+        <p class="muted" data-bind="values>col1>p">Para optimizar el uso del espacio vial, facilitar la movilidad de peatones, ciclistas y vehículos; y ofrecer respuestas concretas a los desafíos urbanos y viales.</p>
+      </div>
+      <div>
+        <h3 data-bind="values>col2>h">Nuestra razón de ser es clara</h3>
+        <p class="muted" data-bind="values>col2>p">Contribuir a construir ciudades más conectadas, accesibles y sostenibles, donde moverse sea más fácil, más seguro y más humano.</p>
+      </div>
+      <div class="strip-cta">
+        <div data-bind="values>ctaLine">¿Buscas soluciones para una <strong>movilidad más inteligente, segura, incluyente y sostenible</strong>?</div>
+        <a href="#contacto" data-bind="values>cta">Conversemos sobre cómo la tecnología puede transformar tu ciudad.</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= EXPERIENCE ======= -->
+  <section class="exp" id="servicios">
+    <div class="exp-inner">
+      <div class="exp-grid">
+        <div>
+          <h2 class="headline">
+            <span data-bind="exp>headlineTop">Experiencia que</span>
+            <span data-bind="exp>headlineStrong">respalda</span>
+            <span data-bind="exp>headlineSub" style="color:#09233a">soluciones reales</span>
+          </h2>
+          <div class="exp-copy">
+            <p data-bind="exp>p1">Durante más de dos décadas, hemos liderado con éxito proyectos en todo el país, aportando soluciones concretas en diseño, suministro, instalación, modernización, actualización y mantenimiento de redes semafóricas, dispositivos periféricos y centros de gestión de tráfico.</p>
+            <p data-bind="exp>p2">Nuestra experiencia también abarca servicios especializados como ingeniería de tráfico, consultoría técnica, capacitaciones e interventorías, siempre orientadas a fortalecer la movilidad urbana e interurbana bajo un enfoque integral.</p>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="num"><span data-bind="stats>years>num">26</span> <small data-bind="stats>years>unit">años</small></div>
+              <div data-bind="stats>years>desc">de experiencia en el sector ITS</div>
+            </div>
+            <div class="stat">
+              <div class="num"><span data-bind="stats>centers>num">3</span> <small data-bind="stats>centers>label">centrales</small></div>
+              <div data-bind="stats>centers>desc">de gestión de tráfico instaladas</div>
+            </div>
+            <div class="stat">
+              <div class="num"><span data-bind="stats>cities>num">19</span> <small data-bind="stats>cities>label">municipios</small></div>
+              <div data-bind="stats>cities>desc">con presencia activa en el país</div>
+            </div>
+            <div class="stat">
+              <div class="num"><span data-bind="stats>coverage>num">9</span> <small data-bind="stats>coverage>of">de</small> <span data-bind="stats>coverage>den">10</span></div>
+              <div data-bind="stats>coverage>desc">municipios del Valle de Aburrá con cobertura</div>
+            </div>
+          </div>
+
+          <p class="reaffirm" data-bind="exp>reaffirm">Con cada proyecto, <strong>reafirmamos nuestro compromiso</strong> con una movilidad <strong>inteligente, segura, incluyente y sostenible</strong>, integrando tecnología, conocimiento y servicio al desarrollo del país.</p>
+        </div>
+
+        <div class="workers">
+          <img class="duotone-blue-yellow" data-src="exp>image" alt="Equipo de campo" src="https://images.unsplash.com/photo-1591451685318-03f1eb2b88f0?q=80&w=1932&auto=format&fit=crop" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= CAROUSEL (before footer) ======= -->
+  <section class="carousel" aria-label="galería" id="galeria">
+    <div class="carousel-inner">
+      <h2 data-bind="carousel>title">Galería de proyectos</h2>
+      <div class="viewport" role="region" aria-roledescription="carrusel">
+        <div class="track" id="carousel-track"></div>
+      </div>
+      <div class="controls">
+        <button class="arrow" id="prev" aria-label="Anterior">◀</button>
+        <div class="dots" id="carousel-dots" aria-label="paginación"></div>
+        <button class="arrow" id="next" aria-label="Siguiente">▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= NEWSLETTER ======= -->
+  <section class="newsletter" aria-label="newsletter">
+    <div class="newsletter-inner">
+      <div class="card">
+        <h3><span data-bind="newsletter>titleLead">Suscríbete</span> <span data-bind="newsletter>titleRest">a nuestro newsletter</span></h3>
+        <form class="nl-form" onsubmit="event.preventDefault(); alert('¡Gracias por suscribirte!');">
+          <input type="email" placeholder="Ingresa tu correo electrónico" required />
+          <button type="submit" data-bind="newsletter>cta">Enviar</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= FOOTER ======= -->
+  <footer id="contacto">
+    <div class="footer-inner">
+      <div>
+        <div class="logo-foot">
+          <span class="mark">S</span>
+          <div>
+            <strong>soluciones de tráfico</strong>
+            <div style="font-size:.95rem; color:#9fbed8" data-bind="footer>motto">Trabajamos por una movilidad más segura y humana, donde cada interacción cuenta.</div>
+          </div>
+        </div>
+        <div style="margin-top:1rem; display:flex; gap:.5rem">
+          <a href="#" class="cta" aria-label="Instagram">IG</a>
+          <a href="#" class="cta" aria-label="Facebook">FB</a>
+          <a href="#" class="cta" aria-label="LinkedIn">IN</a>
+        </div>
+      </div>
+
+      <div>
+        <h4 style="margin:.2rem 0 .6rem; color:#fff" data-bind="footer>menuTitle">Menú</h4>
+        <nav class="menu">
+          <a href="#quienes" data-bind="nav>quienes">Quiénes somos</a>
+          <a href="#productos" data-bind="nav>productos">Productos</a>
+          <a href="#blog" data-bind="nav>blog">Blog</a>
+          <a href="#aliados" data-bind="nav>aliados">Aliados tecnológicos</a>
+          <a href="#contacto" data-bind="nav>contacto">Contáctenos</a>
+        </nav>
+      </div>
+
+      <div class="contact-card">
+        <div style="font-weight:800; color:#fff" data-bind="footer>contactTitle">Medellín · Colombia</div>
+        <div data-bind="footer>address">Carrera 82 # 49DD-32</div>
+        <div><strong>WhatsApp</strong>: <span data-bind="footer>whatsapp">+57 (317) 326 6027</span></div>
+        <div><strong>Email</strong>: <a href="mailto:info@solucionesdetrafico.co" data-bind="footer>email">info@solucionesdetrafico.co</a></div>
+      </div>
+    </div>
+    <div class="legal" data-bind="footer>legal">Todos los derechos reservados © Soluciones de Tráfico S.A.S. 2025</div>
+  </footer>
+
+  <!-- ======= BEHAVIOR (XML binding + Carousel) ======= -->
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const xmlText = document.getElementById('cms-data').textContent.trim();
-      const doc = new DOMParser().parseFromString(xmlText, 'application/xml');
-      const errorNode = doc.querySelector('parsererror');
-      if (errorNode) {
-        console.error('Error al parsear XML:', errorNode.textContent);
-        document.body.insertAdjacentHTML('afterbegin', '<p style="color:red;">Error en XML: revisa la sintaxis.</p>');
-        return;
+    (function(){
+      const xmlText = document.getElementById('content-xml').textContent.trim();
+      const xml = new DOMParser().parseFromString(xmlText, 'application/xml');
+
+      // Text binders
+      document.querySelectorAll('[data-bind]').forEach(el=>{
+        const path = el.getAttribute('data-bind');
+        const node = xml.querySelector(path);
+        if(node && node.textContent) el.textContent = node.textContent.trim();
+      });
+      // src binders (images)
+      document.querySelectorAll('[data-src]').forEach(el=>{
+        const path = el.getAttribute('data-src');
+        const node = xml.querySelector(path);
+        if(node){
+          const src = node.getAttribute('src') || node.textContent.trim();
+          if(src) el.setAttribute('src', src);
+          const alt = node.getAttribute('alt');
+          if(alt) el.setAttribute('alt', alt);
+        }
+      });
+
+      // ===== Carousel build from XML =====
+      const track = document.getElementById('carousel-track');
+      const dots = document.getElementById('carousel-dots');
+      const slides = [];
+      xml.querySelectorAll('carousel > image').forEach((imgNode, i)=>{
+        const slide = document.createElement('div');
+        slide.className = 'slide';
+        const img = document.createElement('img');
+        img.loading = 'lazy';
+        img.alt = imgNode.getAttribute('alt') || 'fotografía';
+        img.src = imgNode.getAttribute('src');
+        img.className = 'duotone-blue-yellow';
+        slide.appendChild(img); track.appendChild(slide); slides.push(slide);
+        const dot = document.createElement('button');
+        dot.addEventListener('click', ()=>goTo(i));
+        dots.appendChild(dot);
+      });
+
+      let index = 0; const prev = document.getElementById('prev'), next = document.getElementById('next');
+      function update(){
+        const offset = -index * track.clientWidth; track.style.transform = `translateX(${offset}px)`;
+        dots.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('active', i===index));
       }
-      const mapText = {
-        'hero.title': 'site > hero > title',
-        'hero.subtitle': 'site > hero > subtitle',
-        'gallery.title': 'site > gallery > title'
-      };
-      document.querySelectorAll('[data-cms]').forEach(el => {
-        const key = el.getAttribute('data-cms');
-        const sel = mapText[key];
-        const node = sel && doc.querySelector(sel);
-        if (node) el.textContent = node.textContent.trim();
-      });
-      const mapImg = {
-        'gallery.img1': 'site > gallery > img1'
-      };
-      document.querySelectorAll('[data-cms-img]').forEach(img => {
-        const key = img.getAttribute('data-cms-img');
-        const sel = mapImg[key];
-        const node = sel && doc.querySelector(sel);
-        if (node) img.src = node.textContent.trim();
-      });
-    });
+      function goTo(i){ index = (i+slides.length)%slides.length; update(); }
+      prev.addEventListener('click', ()=>goTo(index-1));
+      next.addEventListener('click', ()=>goTo(index+1));
+      window.addEventListener('resize', update);
+      update();
+      // autoplay
+      setInterval(()=> goTo(index+1), 6000);
+    })();
+  </script>
+
+  <!-- ======= INLINE XML (Edit this to manage all content/links/images) ======= -->
+  <script id="content-xml" type="application/xml">
+    <content>
+      <nav>
+        <inicio>Inicio</inicio>
+        <quienes>Quiénes somos</quienes>
+        <productos>Productos</productos>
+        <servicios>Nuestros servicios</servicios>
+        <aliados>Aliados tecnológicos</aliados>
+        <blog>Blog</blog>
+        <contacto>Contáctenos</contacto>
+        <idioma>ES | EN</idioma>
+      </nav>
+
+      <hero>
+        <eyebrow>conoce</eyebrow>
+        <sobreLabel>sobre</sobreLabel>
+        <nosotrosLabel>NOSOTROS</nosotrosLabel>
+        <p1>Creemos en ciudades que se mueven mejor cuando la tecnología está al servicio de las personas. Por eso, trabajamos para hacer realidad una movilidad que sea inteligente, segura, incluyente y sostenible.</p1>
+        <p2>Somos una empresa colombiana 26 años de trayectoria en el desarrollo e implementación de soluciones ITS (Intelligent Traffic Systems), respaldada por un equipo de profesionales altamente calificados y comprometidos con la transformación de la movilidad en el país.</p2>
+        <cta>¡Hablemos!</cta>
+        <image src="https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&amp;w=1974&amp;auto=format&amp;fit=crop" alt="Equipo humano"/>
+      </hero>
+
+      <values>
+        <pill>Soluciones con sentido</pill>
+        <col1>
+          <h>Combinamos experiencia, innovación y conocimiento</h>
+          <p>Para optimizar el uso del espacio vial, facilitar la movilidad de peatones, ciclistas y vehículos; y ofrecer respuestas concretas a los desafíos urbanos y viales.</p>
+        </col1>
+        <col2>
+          <h>Nuestra razón de ser es clara</h>
+          <p>Contribuir a construir ciudades más conectadas, accesibles y sostenibles, donde moverse sea más fácil, más seguro y más humano.</p>
+        </col2>
+        <ctaLine>¿Buscas soluciones para una <strong>movilidad más inteligente, segura, incluyente y sostenible</strong>?</ctaLine>
+        <cta>Conversemos sobre cómo la tecnología puede transformar tu ciudad.</cta>
+      </values>
+
+      <exp>
+        <headlineTop>Experiencia que</headlineTop>
+        <headlineStrong>respalda</headlineStrong>
+        <headlineSub>soluciones reales</headlineSub>
+        <p1>Durante más de dos décadas, hemos liderado con éxito proyectos en todo el país, aportando soluciones concretas en diseño, suministro, instalación, modernización, actualización y mantenimiento de redes semafóricas, dispositivos periféricos y centros de gestión de tráfico.</p1>
+        <p2>Nuestra experiencia también abarca servicios especializados como ingeniería de tráfico, consultoría técnica, capacitaciones e interventorías, siempre orientadas a fortalecer la movilidad urbana e interurbana bajo un enfoque integral.</p2>
+        <image src="https://images.unsplash.com/photo-1591451685318-03f1eb2b88f0?q=80&amp;w=1932&amp;auto=format&amp;fit=crop" alt="Equipo en obra"/>
+        <reaffirm>Con cada proyecto, <strong>reafirmamos nuestro compromiso</strong> con una movilidad <strong>inteligente, segura, incluyente y sostenible</strong>, integrando tecnología, conocimiento y servicio al desarrollo del país.</reaffirm>
+      </exp>
+
+      <stats>
+        <years>
+          <num>26</num>
+          <unit>años</unit>
+          <desc>de experiencia en el sector ITS</desc>
+        </years>
+        <centers>
+          <num>3</num>
+          <label>centrales</label>
+          <desc>de gestión de tráfico instaladas</desc>
+        </centers>
+        <cities>
+          <num>19</num>
+          <label>municipios</label>
+          <desc>con presencia activa en el país</desc>
+        </cities>
+        <coverage>
+          <num>9</num>
+          <of>de</of>
+          <den>10</den>
+          <desc>municipios del Valle de Aburrá con cobertura</desc>
+        </coverage>
+      </stats>
+
+      <carousel>
+        <title>Galería de proyectos</title>
+        <image src="https://images.unsplash.com/photo-1541534401786-2077eed87a72?q=80&amp;w=1976&amp;auto=format&amp;fit=crop" alt="Centro de control"/>
+        <image src="https://images.unsplash.com/photo-1591452194893-1d90360a2f68?q=80&amp;w=1976&amp;auto=format&amp;fit=crop" alt="Tecnología vial"/>
+        <image src="https://images.unsplash.com/photo-1508057198894-247b23fe5ade?q=80&amp;w=1976&amp;auto=format&amp;fit=crop" alt="Movilidad urbana"/>
+        <image src="https://images.unsplash.com/photo-1520975954732-35dd22fd5d09?q=80&amp;w=1976&amp;auto=format&amp;fit=crop" alt="Señalización inteligente"/>
+      </carousel>
+
+      <newsletter>
+        <titleLead>Suscríbete</titleLead>
+        <titleRest>a nuestro newsletter</titleRest>
+        <cta>Enviar</cta>
+      </newsletter>
+
+      <footer>
+        <motto>Trabajamos por una movilidad más segura y humana, donde cada interacción cuenta.</motto>
+        <menuTitle>Menú</menuTitle>
+        <contactTitle>Medellín · Colombia</contactTitle>
+        <address>Carrera 82 # 49DD-32</address>
+        <whatsapp>+57 (317) 326 6027</whatsapp>
+        <email>info@solucionesdetrafico.co</email>
+        <legal>Todos los derechos reservados © Soluciones de Tráfico S.A.S. 2025</legal>
+      </footer>
+    </content>
   </script>
 </body>
 </html>
-
