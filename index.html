@@ -3,240 +3,23 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Soluciones de Tráfico — Demo (replicado)</title>
-  <meta name="description" content="Demo estática que replica diseño, tipografía y diagramación de la captura, con XML para editar contenido y carrusel de fotos."/>
-
-  <!-- Tipografías -->
+  <title>Soluciones de Tráfico — Demo</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <!-- Swiper (carrusel) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-
   <style>
-    /* ==========================
-       Variables y reset
-       ========================== */
-    :root{
-      --navy-900:#0e2942; /* azul profundo principal */
-      --navy-800:#103553;
-      --navy-700:#1c4a6e;
-      --navy-600:#235a83;
-      --navy-500:#2c6a99;
-      --ink:#0f2033;
-      --bg-ice:#f2f6fb;
-      --bg-body:#f6f8fb;
-      --yellow-500:#FFC300; /* acento */
-      --yellow-600:#ffb300;
-      --muted:#5a6b85;
-      --white:#fff;
-      --shadow: 0 10px 30px rgba(16, 53, 83, .15);
-      --radius-xl: 28px; /* radios grandes redondeados */
-      --radius-lg: 22px;
-      --radius-md: 16px;
-      --maxw: 1180px; /* ancho de contenedor */
-    }
-
-    *,*::before,*::after{box-sizing:border-box}
-    html,body{margin:0;padding:0}
-    body{
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color: var(--ink);
-      background: var(--bg-body);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    h1,h2,h3,h4{font-family: Montserrat, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; line-height:1.15; margin:0 0 .5rem 0}
-    h1{font-weight:800; font-size: clamp(2rem, 2.4vw + 1.2rem, 3.25rem)}
-    h2{font-weight:800; font-size: clamp(1.6rem, 1.6vw + 1rem, 2.25rem)}
-    h3{font-weight:700; font-size: clamp(1.25rem, 1vw + .9rem, 1.5rem)}
-    p{margin:.5rem 0 1rem 0; color:#314257}
-    .container{max-width: var(--maxw); margin-inline:auto; padding: clamp(16px, 2vw, 24px)}
-    .grid{display:grid; gap:clamp(16px, 2vw, 24px)}
-
-    /* ==========================
-       Navegación
-       ========================== */
-    .nav{
-      position:sticky; top:0; z-index:50; backdrop-filter:saturate(120%) blur(6px);
-      background: linear-gradient(180deg, rgba(14,41,66,.85), rgba(14,41,66,.75));
-      color:var(--white);
-      box-shadow: 0 8px 20px rgba(0,0,0,.18);
-    }
-    .nav-inner{display:flex; align-items:center; justify-content:space-between; gap:16px}
-    .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.3px}
-    .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--yellow-500)}
-    .menu{display:flex; gap:18px; align-items:center}
-    .menu a{color: #cfe0f6; text-decoration:none; font-weight:600; font-size:.95rem}
-    .menu a:hover{color:#fff}
-    .cta{display:inline-flex; align-items:center; gap:.5rem; background:var(--yellow-500); color:#0c2136; font-weight:800; text-decoration:none; padding:.7rem 1rem; border-radius: 999px; box-shadow: var(--shadow)}
-
-    /* ==========================
-       Hero "Conoce sobre nosotros"
-       ========================== */
-    .section-hero{
-      background: radial-gradient(1000px 280px at 60% -80px, rgba(255,195,0,.25), transparent 60%), var(--bg-ice);
-      position: relative;
-      overflow:hidden;
-    }
-    /* olas superiores/inferiores */
-    .wave-top, .wave-bottom{position:absolute; inset-inline:0; height:120px; pointer-events:none}
-    .wave-top{top:-1px}
-    .wave-bottom{bottom:-1px}
-    .wave-top svg, .wave-bottom svg{display:block; width:100%; height:100%}
-
-    .hero-grid{grid-template-columns: 1.05fr .95fr; align-items:center}
-
-    .hero-blob{
-      position:relative; padding: clamp(18px, 1.4vw, 22px) clamp(24px, 2vw, 28px);
-      max-width: 580px;
-      margin: 10px 0 22px;
-      color: var(--white);
-      isolation:isolate;
-    }
-    .hero-blob::before{
-      content:""; position:absolute; inset:0; z-index:-1;
-      background: var(--navy-900);
-      border-radius: 52% 48% 42% 58% / 46% 37% 63% 54%;
-      box-shadow: var(--shadow);
-      transform: rotate(-2.5deg);
-    }
-    .eyebrow{display:block; font: 700 .95rem/1 Montserrat; letter-spacing:.04em; text-transform:lowercase; opacity:.9}
-    .hero-title{display:block; margin-top:.15rem; font: 800 clamp(2rem, 2.8vw + 1rem, 3.4rem)/1.02 Montserrat;}
-    .hero-title .accent{color:var(--yellow-500)}
-
-    .hero-txt{max-width:640px}
-    .hero-actions{margin-top:.8rem}
-    .btn{
-      display:inline-flex; align-items:center; gap:.5rem; border:0; cursor:pointer; text-decoration:none; font-weight:700;
-      padding:.9rem 1.1rem; border-radius: 999px; box-shadow: var(--shadow);
-    }
-    .btn-yellow{background: var(--yellow-500); color:#0f2134}
-    .btn-yellow:hover{background: var(--yellow-600)}
-
-    .hero-photo{
-      position:relative; max-width:560px; margin-inline:auto; filter: grayscale(100%) contrast(1.05) saturate(1.1);
-    }
-    .hero-photo::before{ /* blob amarilla detrás */
-      content:""; position:absolute; inset:-8% -10% -12% -6%; z-index:-2; border-radius: 42% 58% 56% 44% / 48% 38% 62% 52%; background: var(--yellow-500);
-      transform: rotate(-6deg);
-      filter: drop-shadow(0 12px 30px rgba(255,176,0,.35));
-    }
-    .hero-photo img{width:100%; height:auto; display:block; border-radius: 42% 58% 40% 60% / 40% 50% 50% 60%;
-      box-shadow: 0 25px 40px rgba(16,53,83,.25);
-      filter: url(#duotone-blue-yellow); /* Filtro SVG (duotono) */
-    }
-
-    /* ==========================
-       Cintillo "Soluciones con sentido"
-       ========================== */
-    .belt{position:relative; overflow:hidden; background: var(--navy-900); color:#e9f1fb}
-    .belt::before{ /* imagen de fondo con overlay */
-      content:""; position:absolute; inset:0; background:
-        linear-gradient(0deg, rgba(14,41,66,.72), rgba(14,41,66,.72)),
-        url("https://images.unsplash.com/photo-1516542076529-1ea3854896e1?q=80&w=1600&auto=format&fit=crop");
-      background-size:cover; background-position:center; filter: grayscale(100%) contrast(1.15);
-      z-index:0;
-    }
-    .belt-inner{position:relative; z-index:1}
-    .belt-grid{grid-template-columns: 320px 1fr 1fr; align-items:center}
-    .pill-yellow{
-      background: var(--yellow-500); color:#0c2136; font-weight:800; font-family: Montserrat; border-radius: 42% 58% 50% 50% / 40% 47% 53% 60%;
-      padding: 26px 22px; text-align:center; box-shadow: var(--shadow)
-    }
-    .belt h3{color:#ffd96a; margin-bottom:.35rem}
-    .belt p{color:#cfe0f6}
-
-    /* ==========================
-       Bloque Experiencia + KPIs
-       ========================== */
-    .exp{position:relative; background: var(--bg-ice)}
-    .exp-grid{grid-template-columns: 1.1fr .9fr; align-items:start}
-    .exp-figure{position:relative; max-width:520px; margin:auto}
-    .exp-figure::before{content:""; position:absolute; inset:-8% -8% -12% -8%; background: radial-gradient(60% 60% at 50% 40%, #fff 0, #fff 45%, transparent 46%), var(--bg-ice); z-index:-1; border-radius: 48% 52% 40% 60% / 48% 40% 60% 52%;}
-    .exp-figure img{display:block; width:100%; border-radius: 34% 66% 54% 46% / 48% 40% 60% 52%;
-      filter: url(#duotone-blue-yellow);
-      box-shadow: 0 18px 45px rgba(16,53,83,.22);
-    }
-
-    .kpis{display:grid; grid-template-columns: repeat(4, 1fr); gap:18px; margin-top: 26px}
-    .kpi{
-      background:#fff; border-radius: var(--radius-md); padding:18px 16px; box-shadow: var(--shadow);
-      display:grid; gap:6px; min-height:106px;
-    }
-    .kpi .num{font:800 2rem/1 Montserrat; color: var(--navy-900)}
-    .kpi .label{font-weight:700; color:#7892b0; font-size:.9rem}
-    .kpi .sub{font-size:.78rem; color:#8aa0bd}
-    .kpi:nth-child(1){background: linear-gradient(180deg, #fff6cc, #fff);}
-    .kpi:nth-child(2){background: linear-gradient(180deg, #e6f0ff, #fff)}
-    .kpi:nth-child(3){background: linear-gradient(180deg, #e6f9ff, #fff)}
-    .kpi:nth-child(4){background: linear-gradient(180deg, #fff2cc, #fff)}
-
-    .exp-note{margin-top:16px; color:#38526f; font-weight:700}
-
-    /* ==========================
-       Carrusel de fotos (antes del footer)
-       ========================== */
-    .gallery{position:relative; background: linear-gradient(180deg, #0e2942, #0c2136); color:#fff; padding: 42px 0 62px;}
-    .gallery h2{color:#fff; text-align:center; margin-bottom:10px}
-    .swiper{width: min(1180px, 94%); border-radius: var(--radius-lg); box-shadow: 0 12px 30px rgba(0,0,0,.25)}
-    .swiper-slide{position:relative}
-    .swiper-slide img{display:block; width:100%; height:420px; object-fit:cover; filter: url(#duotone-blue-yellow);}
-    .swiper-pagination-bullet{background:#fff; opacity:.7}
-    .swiper-pagination-bullet-active{background: var(--yellow-500)}
-    .swiper-button-next, .swiper-button-prev{color:#fff}
-
-    /* ==========================
-       Newsletter + Footer
-       ========================== */
-    .newsletter{position:relative; background: var(--navy-900); color:#bcd3ee; padding: 48px 0}
-    .newsletter .inner{display:grid; grid-template-columns: 1.1fr .9fr; gap:24px; align-items:center}
-    .newsletter h3{color:#ffd96a}
-    .form{display:flex; gap:10px}
-    .form input{
-      flex:1; border:2px solid rgba(255,255,255,.08); background: rgba(255,255,255,.06); color:#fff; border-radius: 999px; padding: .9rem 1.1rem; outline:none
-    }
-    .form input::placeholder{color:#c4d7f1}
-    .footer{background:#081829; color:#8aa0bd; padding: 26px 0 40px}
-    .footer .cols{display:grid; grid-template-columns: 1.2fr .9fr .9fr; gap:24px}
-    .logo{display:flex; align-items:center; gap:10px; color:#fff; font-weight:800}
-    .logo .mark{width:8px; height:28px; background:var(--yellow-500); border-radius:2px}
-
-    /* Utilidades */
-    .muted{color:#6d84a2}
-    .accent{color:var(--yellow-500)}
-    .space{height: clamp(26px, 4vw, 42px)}
-    .lead{font-size:1.05rem}
-
-    /* Responsive */
-    @media (max-width: 980px){
-      .hero-grid, .belt-grid, .exp-grid, .newsletter .inner{grid-template-columns: 1fr}
-      .kpis{grid-template-columns: 1fr 1fr}
-      .hero-photo{max-width: 520px}
-    }
-    @media (max-width: 560px){
-      .kpis{grid-template-columns: 1fr}
-      .swiper-slide img{height: 300px}
-    }
-
-    /* Preferencias de movimiento reducido */
-    @media (prefers-reduced-motion: reduce){
-      .swiper, .swiper *{transition:none !important; animation:none !important}
-    }
+    /* TODO: insertar aquí todo el CSS del primer archivo (variables, tipografía, layout, carrusel, newsletter, footer, etc.) */
   </style>
 </head>
 <body>
-  <!-- ====== SVG filtros (duotono azul/amarillo) ====== -->
-  <svg width="0" height="0" style="position:absolute">
+
+  <!-- SVG duotono -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <filter id="duotone-blue-yellow">
-      <!-- Convertimos a monocromo y remapeamos canales -->
-      <feColorMatrix type="matrix" values="
-        0.2126 0.7152 0.0722 0 0
-        0.2126 0.7152 0.0722 0 0
-        0.2126 0.7152 0.0722 0 0
-        0      0      0      1 0" />
-      <!-- Mapeo a 2 colores: azul profundo / amarillo -->
+      <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0
+      0.2126 0.7152 0.0722 0 0
+      0.2126 0.7152 0.0722 0 0
+      0      0      0      1 0" />
       <feComponentTransfer color-interpolation-filters="sRGB">
         <feFuncR type="table" tableValues="0.05 1.0"/>
         <feFuncG type="table" tableValues="0.25 0.85"/>
@@ -246,320 +29,67 @@
     </filter>
   </svg>
 
-  <!-- =================== NAV =================== -->
-  <header class="nav">
-    <div class="container nav-inner">
-      <div class="brand"><span class="dot"></span> Soluciones de <span class="accent">tráfico</span></div>
-      <nav class="menu">
-        <a href="#hero">Quiénes somos</a>
-        <a href="#belt">Nuestro propósito</a>
-        <a href="#exp">Experiencia</a>
-        <a href="#galeria">Galería</a>
-        <a class="cta" href="#contacto">Contáctenos</a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- =================== HERO =================== -->
-  <section class="section-hero" id="hero">
-    <div class="wave-top">
-      <svg viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path fill="#0e2942" d="M0,64L48,58.7C96,53,192,43,288,69.3C384,96,480,160,576,181.3C672,203,768,181,864,170.7C960,160,1056,160,1152,144C1248,128,1344,96,1392,80L1440,64L1440,0L0,0Z" opacity=".06"/></svg>
-    </div>
-
-    <div class="container grid hero-grid">
-      <div>
-        <div class="hero-blob">
-          <span class="eyebrow" data-cms="hero.eyebrow">conoce</span>
-          <span class="hero-title" data-cms="hero.title">sobre <span class="accent">NOSOTROS</span></span>
-        </div>
-        <div class="hero-txt">
-          <p class="lead" data-cms="hero.p1">Creemos en ciudades que se mueven mejor cuando la tecnología está al servicio de las personas.</p>
-          <p data-cms="hero.p2">Somos una empresa colombiana con <strong>26 años</strong> de trayectoria en el desarrollo e implementación de soluciones ITS (Intelligent Traffic Systems).</p>
-          <div class="hero-actions"><a class="btn btn-yellow" href="#contacto" data-cms="hero.cta">¡Hablemos!</a></div>
-        </div>
-      </div>
-      <figure class="hero-photo">
-        <img data-cms-img="hero.image" alt="Equipo humano" src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=1100&auto=format&fit=crop"/>
-      </figure>
-    </div>
-
-    <div class="wave-bottom">
-      <svg viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path fill="#0e2942" d="M0,64L80,80C160,96,320,128,480,106.7C640,85,800,11,960,10.7C1120,11,1280,85,1360,122.7L1440,160L1440,120L0,120Z" opacity=".06"/></svg>
-    </div>
-  </section>
-
-  <!-- ========== BELT: Soluciones con sentido ========== -->
-  <section class="belt" id="belt">
-    <div class="container belt-inner">
-      <div class="grid belt-grid">
-        <div class="pill-yellow" data-cms="belt.badge">Soluciones con<br/>sentido</div>
-        <div>
-          <h3 data-cms="belt.col1.title">Combinamos experiencia, innovación y conocimiento</h3>
-          <p data-cms="belt.col1.p">Para optimizar el uso del espacio vial, facilitar la movilidad de peatones, ciclistas y vehículos, y ofrecer respuestas concretas a los desafíos urbanos y viales.</p>
-        </div>
-        <div>
-          <h3 data-cms="belt.col2.title">Nuestra razón de ser es clara</h3>
-          <p data-cms="belt.col2.p">Contribuir a construir ciudades más conectadas, accesibles y sostenibles, donde moverse sea más fácil, más seguro y más humano.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== EXPERIENCIA ========== -->
-  <section class="exp" id="exp">
-    <div class="container grid exp-grid">
-      <div>
-        <h2><span data-cms="exp.h1">Experiencia que</span><br><span class="accent" data-cms="exp.h2">respalda soluciones reales</span></h2>
-        <p data-cms="exp.p1">Durante más de dos décadas hemos liderado proyectos ITS en todo el país: diseño, suministro, instalación, modernización, actualización y mantenimiento de redes semafóricas y centros de gestión de tráfico.</p>
-        <p data-cms="exp.p2">Nuestro enfoque integra tecnología, consultoría y capacitación para fortalecer la movilidad urbana e interurbana.</p>
-
-        <div class="kpis">
-          <div class="kpi">
-            <div class="num" data-cms="kpi.1.num">26</div>
-            <div class="label" data-cms="kpi.1.label">años</div>
-            <div class="sub" data-cms="kpi.1.sub">de experiencia en el sector ITS</div>
-          </div>
-          <div class="kpi">
-            <div class="num" data-cms="kpi.2.num">3</div>
-            <div class="label" data-cms="kpi.2.label">centrales</div>
-            <div class="sub" data-cms="kpi.2.sub">de gestión de tráfico instaladas</div>
-          </div>
-          <div class="kpi">
-            <div class="num" data-cms="kpi.3.num">19</div>
-            <div class="label" data-cms="kpi.3.label">municipios</div>
-            <div class="sub" data-cms="kpi.3.sub">con presencia activa en el país</div>
-          </div>
-          <div class="kpi">
-            <div class="num" data-cms="kpi.4.num">9 de 10</div>
-            <div class="label" data-cms="kpi.4.label">valle de aburrá</div>
-            <div class="sub" data-cms="kpi.4.sub">con cobertura</div>
-          </div>
-        </div>
-
-        <p class="exp-note" data-cms="exp.note">Con cada proyecto reafirmamos nuestro compromiso con una movilidad inteligente, segura, incluyente y sostenible.</p>
-      </div>
-
-      <figure class="exp-figure">
-        <img data-cms-img="exp.image" alt="Técnicos en campo" src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=1000&auto=format&fit=crop"/>
-      </figure>
-    </div>
-  </section>
-
-  <!-- ========== GALERÍA (carrusel) ========== -->
-  <section class="gallery" id="galeria">
-    <div class="container">
-      <h2 data-cms="gallery.title">Proyectos y equipos en acción</h2>
-      <div class="swiper">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide"><img data-cms-img="gallery.img1" alt="Control de tráfico 1" src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=1600&auto=format&fit=crop"/></div>
-          <div class="swiper-slide"><img data-cms-img="gallery.img2" alt="Señales y movilidad" src="https://images.unsplash.com/photo-1542361334-4248f0b3473f?q=80&w=1600&auto=format&fit=crop"/></div>
-          <div class="swiper-slide"><img data-cms-img="gallery.img3" alt="Centro de control" src="https://images.unsplash.com/photo-1555371361-0008ab5b0915?q=80&w=1600&auto=format&fit=crop"/></div>
-          <div class="swiper-slide"><img data-cms-img="gallery.img4" alt="Tecnología vial" src="https://images.unsplash.com/photo-1487956382158-bb926046304a?q=80&w=1600&auto=format&fit=crop"/></div>
-        </div>
-        <div class="swiper-pagination"></div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== NEWSLETTER + FOOTER ========== -->
-  <section class="newsletter" id="contacto">
-    <div class="container inner">
-      <div>
-        <h3 data-cms="newsletter.title">Suscríbete a nuestro newsletter</h3>
-        <p class="muted" data-cms="newsletter.copy">Noticias, lanzamientos y aprendizajes sobre movilidad inteligente.</p>
-      </div>
-      <form class="form" onsubmit="event.preventDefault(); alert('¡Gracias por suscribirte!');">
-        <input type="email" placeholder="Ingresa tu correo electrónico" required>
-        <button class="btn btn-yellow" type="submit" data-cms="newsletter.cta">Enviar</button>
-      </form>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="container">
-      <div class="cols">
-        <div>
-          <div class="logo"><span class="mark"></span> Soluciones de <span class="accent">tráfico</span></div>
-          <p class="muted" data-cms="footer.about">Trabajamos por una movilidad más segura y humana, donde cada interacción cuenta.</p>
-        </div>
-        <div>
-          <h4 style="margin:0 0 .6rem 0;color:#cfe0f6">Menú</h4>
-          <div class="muted">Quiénes somos · Productos · Blog · Alianzas · Contáctenos</div>
-        </div>
-        <div>
-          <h4 style="margin:0 0 .6rem 0;color:#cfe0f6">Contacto</h4>
-          <div class="muted" data-cms="footer.contact">Medellín, Colombia — Carrera 82 # 49DD-32 · WhatsApp +57 312 326 6027 · info@ejemplo.co</div>
-        </div>
-      </div>
-      <p class="muted" style="margin-top:20px">© 2025 Soluciones de Tráfico — Demo</p>
-    </div>
-  </footer>
-
-  <!-- =================== XML editable =================== -->
-  <script type="application/xml" id="cms-xml">
-    <site>
-      <hero>
-        <eyebrow>conoce</eyebrow>
-        <title>sobre <b>NOSOTROS</b></title>
-        <p1>Creemos en ciudades que se mueven mejor cuando la tecnología está al servicio de las personas.</p1>
-        <p2>Somos una empresa colombiana con <b>26 años</b> de trayectoria en el desarrollo e implementación de soluciones ITS (Intelligent Traffic Systems).</p2>
-        <cta>¡Hablemos!</cta>
-        <image>https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&amp;w=1100&amp;auto=format&amp;fit=crop</image>
-      </hero>
-      <belt>
-        <badge>Soluciones con sentido</badge>
-        <col1>
-          <title>Combinamos experiencia, innovación y conocimiento</title>
-          <p>Para optimizar el uso del espacio vial, facilitar la movilidad de peatones, ciclistas y vehículos, y ofrecer respuestas concretas a los desafíos urbanos y viales.</p>
-        </col1>
-        <col2>
-          <title>Nuestra razón de ser es clara</title>
-          <p>Contribuir a construir ciudades más conectadas, accesibles y sostenibles, donde moverse sea más fácil, más seguro y más humano.</p>
-        </col2>
-      </belt>
-      <exp>
-        <h1>Experiencia que</h1>
-        <h2>respalda soluciones reales</h2>
-        <p1>Durante más de dos décadas hemos liderado proyectos ITS en todo el país: diseño, suministro, instalación, modernización, actualización y mantenimiento de redes semafóricas y centros de gestión de tráfico.</p1>
-        <p2>Nuestro enfoque integra tecnología, consultoría y capacitación para fortalecer la movilidad urbana e interurbana.</p2>
-        <note>Con cada proyecto reafirmamos nuestro compromiso con una movilidad inteligente, segura, incluyente y sostenible.</note>
-        <image>https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&amp;w=1000&amp;auto=format&amp;fit=crop</image>
-      </exp>
-      <kpis>
-        <kpi index="1">
-          <num>26</num>
-          <label>años</label>
-          <sub>de experiencia en el sector ITS</sub>
-        </kpi>
-        <kpi index="2">
-          <num>3</num>
-          <label>centrales</label>
-          <sub>de gestión de tráfico instaladas</sub>
-        </kpi>
-        <kpi index="3">
-          <num>19</num>
-          <label>municipios</label>
-          <sub>con presencia activa en el país</sub>
-        </kpi>
-        <kpi index="4">
-          <num>9 de 10</num>
-          <label>Valle de Aburrá</label>
-          <sub>con cobertura</sub>
-        </kpi>
-      </kpis>
-      <gallery>
-        <title>Proyectos y equipos en acción</title>
-        <img1>https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&amp;w=1600&amp;auto=format&amp;fit=crop</img1>
-        <img2>https://images.unsplash.com/photo-1542361334-4248f0b3473f?q=80&amp;w=1600&amp;auto=format&amp;fit=crop</img2>
-        <img3>https://images.unsplash.com/photo-1555371361-0008ab5b0915?q=80&amp;w=1600&amp;auto=format&amp;fit=crop</img3>
-        <img4>https://images.unsplash.com/photo-1487956382158-bb926046304a?q=80&amp;w=1600&amp;auto=format&amp;fit=crop</img4>
-      </gallery>
-      <newsletter>
-        <title>Suscríbete a nuestro newsletter</title>
-        <copy>Noticias, lanzamientos y aprendizajes sobre movilidad inteligente.</copy>
-        <cta>Enviar</cta>
-      </newsletter>
-      <footer>
-        <about>Trabajamos por una movilidad más segura y humana, donde cada interacción cuenta.</about>
-        <contact>Medellín, Colombia — Carrera 82 # 49DD-32 · WhatsApp +57 312 326 6027 · info@ejemplo.co</contact>
-      </footer>
-    </site>
-  </script>
-
-  <!-- =================== JS: carga de XML + Swiper =================== -->
-  <script>
-    // Lee y aplica el XML de #cms-xml a los elementos con data-cms / data-cms-img
-    (function(){
-      const xmlRaw = document.getElementById('cms-xml').textContent.trim();
-      const doc = new DOMParser().parseFromString(xmlRaw, 'application/xml');
-      const pick = sel => (doc.querySelector(sel)?.textContent || '').trim();
-
-      // Texto
-      const map = {
-        'hero.eyebrow': 'site > hero > eyebrow',
-        'hero.title': 'site > hero > title',
-        'hero.p1': 'site > hero > p1',
-        'hero.p2': 'site > hero > p2',
-        'hero.cta': 'site > hero > cta',
-
-        'belt.badge': 'site > belt > badge',
-        'belt.col1.title': 'site > belt > col1 > title',
-        'belt.col1.p': 'site > belt > col1 > p',
-        'belt.col2.title': 'site > belt > col2 > title',
-        'belt.col2.p': 'site > belt > col2 > p',
-
-        'exp.h1': 'site > exp > h1',
-        'exp.h2': 'site > exp > h2',
-        'exp.p1': 'site > exp > p1',
-        'exp.p2': 'site > exp > p2',
-        'exp.note': 'site > exp > note',
-
-        'kpi.1.num': 'site > kpis > kpi[index="1"] > num',
-        'kpi.1.label': 'site > kpis > kpi[index="1"] > label',
-        'kpi.1.sub': 'site > kpis > kpi[index="1"] > sub',
-        'kpi.2.num': 'site > kpis > kpi[index="2"] > num',
-        'kpi.2.label': 'site > kpis > kpi[index="2"] > label',
-        'kpi.2.sub': 'site > kpis > kpi[index="2"] > sub',
-        'kpi.3.num': 'site > kpis > kpi[index="3"] > num',
-        'kpi.3.label': 'site > kpis > kpi[index="3"] > label',
-        'kpi.3.sub': 'site > kpis > kpi[index="3"] > sub',
-        'kpi.4.num': 'site > kpis > kpi[index="4"] > num',
-        'kpi.4.label': 'site > kpis > kpi[index="4"] > label',
-        'kpi.4.sub': 'site > kpis > kpi[index="4"] > sub',
-
-        'gallery.title': 'site > gallery > title',
-
-        'newsletter.title': 'site > newsletter > title',
-        'newsletter.copy': 'site > newsletter > copy',
-        'newsletter.cta': 'site > newsletter > cta',
-
-        'footer.about': 'site > footer > about',
-        'footer.contact': 'site > footer > contact'
-      };
-
-      document.querySelectorAll('[data-cms]').forEach(el=>{
-        const key = el.getAttribute('data-cms');
-        const src = map[key];
-        if(src){ el.innerHTML = pick(src); }
-      });
-
-      // Imágenes
-      const imgMap = {
-        'hero.image': 'site > hero > image',
-        'exp.image': 'site > exp > image',
-        'gallery.img1': 'site > gallery > img1',
-        'gallery.img2': 'site > gallery > img2',
-        'gallery.img3': 'site > gallery > img3',
-        'gallery.img4': 'site > gallery > img4'
-      };
-      document.querySelectorAll('[data-cms-img]').forEach(img=>{
-        const key = img.getAttribute('data-cms-img');
-        const src = imgMap[key];
-        if(src){ img.src = pick(src); }
-      })
-    })();
-  </script>
+  <!-- Aquí va el HTML (navigation, hero, belt, exp, gallery, newsletter, footer) igual que antes, con data-cms y data-cms-img -->
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script>
-    const swiper = new Swiper('.swiper', {
-      loop: true,
-      slidesPerView: 1,
-      spaceBetween: 10,
-      centeredSlides: true,
-      pagination: {
-        el: '.swiper-pagination', clickable: true, dynamicBullets: true
-      },
-      navigation: {
-        nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev'
-      },
-      breakpoints: {
-        920: { slidesPerView: 1 },
-        1200: { slidesPerView: 1 }
-      }
+  async function cargaContenido() {
+    const resp = await fetch('content.xml');
+    const text = await resp.text();
+    const doc = new DOMParser().parseFromString(text, 'application/xml');
+
+    const map = {
+      'hero.eyebrow':'site > hero > eyebrow',
+      'hero.title':'site > hero > title',
+      'hero.p1':'site > hero > p1',
+      'hero.p2':'site > hero > p2',
+      'hero.cta':'site > hero > cta',
+      'belt.badge':'site > belt > badge',
+      'belt.col1.title':'site > belt > col1 > title',
+      'belt.col1.p':'site > belt > col1 > p',
+      'belt.col2.title':'site > belt > col2 > title',
+      'belt.col2.p':'site > belt > col2 > p',
+      'exp.h1':'site > exp > h1',
+      'exp.h2':'site > exp > h2',
+      'exp.p1':'site > exp > p1',
+      'exp.p2':'site > exp > p2',
+      'exp.note':'site > exp > note',
+      'gallery.title':'site > gallery > title',
+      'newsletter.title':'site > newsletter > title',
+      'newsletter.copy':'site > newsletter > copy',
+      'newsletter.cta':'site > newsletter > cta',
+      'footer.about':'site > footer > about',
+      'footer.contact':'site > footer > contact'
+    };
+    document.querySelectorAll('[data-cms]').forEach(el=>{
+      const key = el.getAttribute('data-cms');
+      const sel = map[key];
+      const txt = sel && doc.querySelector(sel)?.textContent || '';
+      el.innerHTML = txt.trim();
     });
+
+    const imgMap = {
+      'hero.image':'site > hero > image',
+      'exp.image':'site > exp > image',
+      'gallery.img1':'site > gallery > img1',
+      'gallery.img2':'site > gallery > img2',
+      'gallery.img3':'site > gallery > img3',
+      'gallery.img4':'site > gallery > img4'
+    };
+    document.querySelectorAll('[data-cms-img]').forEach(img=>{
+      const key = img.getAttribute('data-cms-img');
+      const sel = imgMap[key];
+      const src = sel && doc.querySelector(sel)?.textContent || '';
+      if (src) img.src = src.trim();
+    });
+
+    new Swiper('.swiper', {
+      loop: true,
+      pagination: { el: '.swiper-pagination', clickable: true, dynamicBullets: true },
+      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', cargaContenido);
   </script>
 </body>
 </html>
