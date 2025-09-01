@@ -4,22 +4,22 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Soluciones de Tráfico — Demo</title>
+  <!-- Fuentes -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
   <style>
-    /* TODO: insertar aquí todo el CSS del primer archivo (variables, tipografía, layout, carrusel, newsletter, footer, etc.) */
+    /* [...] Aquí va todo el CSS que replicaste del diseño anterior [...] */
   </style>
 </head>
 <body>
-
-  <!-- SVG duotono -->
+  <!-- SVG filtro duotono -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <filter id="duotone-blue-yellow">
       <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0
       0.2126 0.7152 0.0722 0 0
       0.2126 0.7152 0.0722 0 0
-      0      0      0      1 0" />
+      0      0      0      1 0"/>
       <feComponentTransfer color-interpolation-filters="sRGB">
         <feFuncR type="table" tableValues="0.05 1.0"/>
         <feFuncG type="table" tableValues="0.25 0.85"/>
@@ -29,67 +29,127 @@
     </filter>
   </svg>
 
-  <!-- Aquí va el HTML (navigation, hero, belt, exp, gallery, newsletter, footer) igual que antes, con data-cms y data-cms-img -->
+  <!-- Aquí va todo tu contenido HTML (nav, hero, belt, exp, gallery, newsletter, footer),
+       con los atributos data-cms y data-cms-img según el ejemplo anterior -->
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script>
-  async function cargaContenido() {
-    const resp = await fetch('content.xml');
-    const text = await resp.text();
-    const doc = new DOMParser().parseFromString(text, 'application/xml');
+    document.addEventListener('DOMContentLoaded', () => {
+      const xmlString = document.getElementById('cms-data').textContent.trim();
+      let xmlDoc;
+      try {
+        xmlDoc = new DOMParser().parseFromString(xmlString, 'application/xml');
+      } catch (e) {
+        console.error('Error parsing XML:', e);
+        return;
+      }
 
-    const map = {
-      'hero.eyebrow':'site > hero > eyebrow',
-      'hero.title':'site > hero > title',
-      'hero.p1':'site > hero > p1',
-      'hero.p2':'site > hero > p2',
-      'hero.cta':'site > hero > cta',
-      'belt.badge':'site > belt > badge',
-      'belt.col1.title':'site > belt > col1 > title',
-      'belt.col1.p':'site > belt > col1 > p',
-      'belt.col2.title':'site > belt > col2 > title',
-      'belt.col2.p':'site > belt > col2 > p',
-      'exp.h1':'site > exp > h1',
-      'exp.h2':'site > exp > h2',
-      'exp.p1':'site > exp > p1',
-      'exp.p2':'site > exp > p2',
-      'exp.note':'site > exp > note',
-      'gallery.title':'site > gallery > title',
-      'newsletter.title':'site > newsletter > title',
-      'newsletter.copy':'site > newsletter > copy',
-      'newsletter.cta':'site > newsletter > cta',
-      'footer.about':'site > footer > about',
-      'footer.contact':'site > footer > contact'
-    };
-    document.querySelectorAll('[data-cms]').forEach(el=>{
-      const key = el.getAttribute('data-cms');
-      const sel = map[key];
-      const txt = sel && doc.querySelector(sel)?.textContent || '';
-      el.innerHTML = txt.trim();
-    });
+      const map = {
+        'hero.eyebrow':'site > hero > eyebrow',
+        'hero.title':'site > hero > title',
+        'hero.p1':'site > hero > p1',
+        'hero.p2':'site > hero > p2',
+        'hero.cta':'site > hero > cta',
+        'belt.badge':'site > belt > badge',
+        'belt.col1.title':'site > belt > col1 > title',
+        'belt.col1.p':'site > belt > col1 > p',
+        'belt.col2.title':'site > belt > col2 > title',
+        'belt.col2.p':'site > belt > col2 > p',
+        'exp.h1':'site > exp > h1',
+        'exp.h2':'site > exp > h2',
+        'exp.p1':'site > exp > p1',
+        'exp.p2':'site > exp > p2',
+        'exp.note':'site > exp > note',
+        'gallery.title':'site > gallery > title',
+        'newsletter.title':'site > newsletter > title',
+        'newsletter.copy':'site > newsletter > copy',
+        'newsletter.cta':'site > newsletter > cta',
+        'footer.about':'site > footer > about',
+        'footer.contact':'site > footer > contact'
+      };
+      document.querySelectorAll('[data-cms]').forEach(el => {
+        const key = el.getAttribute('data-cms');
+        const sel = map[key];
+        const node = sel && xmlDoc.querySelector(sel);
+        if (node) el.innerHTML = node.textContent.trim();
+      });
 
-    const imgMap = {
-      'hero.image':'site > hero > image',
-      'exp.image':'site > exp > image',
-      'gallery.img1':'site > gallery > img1',
-      'gallery.img2':'site > gallery > img2',
-      'gallery.img3':'site > gallery > img3',
-      'gallery.img4':'site > gallery > img4'
-    };
-    document.querySelectorAll('[data-cms-img]').forEach(img=>{
-      const key = img.getAttribute('data-cms-img');
-      const sel = imgMap[key];
-      const src = sel && doc.querySelector(sel)?.textContent || '';
-      if (src) img.src = src.trim();
-    });
+      const imgMap = {
+        'hero.image':'site > hero > image',
+        'exp.image':'site > exp > image',
+        'gallery.img1':'site > gallery > img1',
+        'gallery.img2':'site > gallery > img2',
+        'gallery.img3':'site > gallery > img3',
+        'gallery.img4':'site > gallery > img4'
+      };
+      document.querySelectorAll('[data-cms-img]').forEach(img => {
+        const key = img.getAttribute('data-cms-img');
+        const sel = imgMap[key];
+        const node = sel && xmlDoc.querySelector(sel);
+        if (node) img.src = node.textContent.trim();
+      });
 
-    new Swiper('.swiper', {
-      loop: true,
-      pagination: { el: '.swiper-pagination', clickable: true, dynamicBullets: true },
-      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
+      new Swiper('.swiper', {
+        loop: true,
+        pagination: { el: '.swiper-pagination', clickable: true, dynamicBullets: true },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
+      });
     });
-  }
-  document.addEventListener('DOMContentLoaded', cargaContenido);
+  </script>
+
+  <!-- Contenidos editables embebidos aquí -->
+  <script type="application/xml" id="cms-data">
+<site>
+  <hero>
+    <eyebrow>conoce</eyebrow>
+    <title>sobre <b>NOSOTROS</b></title>
+    <p1>Creemos en ciudades que se mueven mejor cuando la tecnología está al servicio de las personas.</p1>
+    <p2>Somos una empresa colombiana con <b>26 años</b> de trayectoria en el desarrollo e implementación de soluciones ITS (Intelligent Traffic Systems).</p2>
+    <cta>¡Hablemos!</cta>
+    <image>https://images.unsplash.com/photo-1521737604893...crop</image>
+  </hero>
+  <belt>
+    <badge>Soluciones con sentido</badge>
+    <col1>
+      <title>Combinamos experiencia, innovación y conocimiento</title>
+      <p>Para optimizar el uso del espacio vial...</p>
+    </col1>
+    <col2>
+      <title>Nuestra razón de ser es clara</title>
+      <p>Contribuir a construir ciudades más conectadas...</p>
+    </col2>
+  </belt>
+  <exp>
+    <h1>Experiencia que</h1>
+    <h2>respalda soluciones reales</h2>
+    <p1>Durante más de dos décadas hemos liderado proyectos ITS...</p1>
+    <p2>Nuestro enfoque integra tecnología, consultoría y capacitación...</p2>
+    <note>Con cada proyecto reafirmamos nuestro compromiso...</note>
+    <image>https://images.unsplash.com/photo-1581094794329...crop</image>
+  </exp>
+  <kpis>
+    <kpi index="1"><num>26</num><label>años</label><sub>de experiencia en el sector ITS</sub></kpi>
+    <kpi index="2"><num>3</num><label>centrales</label><sub>de gestión de tráfico instaladas</sub></kpi>
+    <kpi index="3"><num>19</num><label>municipios</label><sub>con presencia activa en el país</sub></kpi>
+    <kpi index="4"><num>9 de 10</num><label>Valle de Aburrá</label><sub>con cobertura</sub></kpi>
+  </kpis>
+  <gallery>
+    <title>Proyectos y equipos en acción</title>
+    <img1>https://images.unsplash.com/photo-1477959858617...crop</img1>
+    <img2>https://images.unsplash.com/photo-1542361334...crop</img2>
+    <img3>https://images.unsplash.com/photo-1555371361...crop</img3>
+    <img4>https://images.unsplash.com/photo-1487956382158...crop</img4>
+  </gallery>
+  <newsletter>
+    <title>Suscríbete a nuestro newsletter</title>
+    <copy>Noticias, lanzamientos y aprendizajes sobre movilidad inteligente.</copy>
+    <cta>Enviar</cta>
+  </newsletter>
+  <footer>
+    <about>Trabajamos por una movilidad más segura y humana, donde cada interacción cuenta.</about>
+    <contact>Medellín, Colombia — Contacto · email@dominio.co</contact>
+  </footer>
+</site>
   </script>
 </body>
 </html>
