@@ -1,478 +1,232 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Replica - Soluciones (Demo)</title>
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soluciones de Tráfico</title>
   <style>
-    :root{
-      --navy:#0f3555;
-      --accent:#f7c500;
-      --muted:#5e6b76;
-      --bg:#f2f6f8;
-      --container:1200px;
-      --radius:14px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;font-family:"Open Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background:var(--bg);color:var(--navy);-webkit-font-smoothing:antialiased;
-    }
-    a{color:inherit;text-decoration:none}
-    img{max-width:100%;display:block}
+    /* === RESET === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; line-height: 1.6; background: #f9f9f9; color: #222; }
 
-    .wrap{max-width:var(--container);margin:0 auto;padding:18px;}
-    /* NAV */
-    nav{position:fixed;left:0;right:0;top:0;z-index:60;background:linear-gradient(180deg, rgba(15,53,85,0.96), rgba(15,53,85,0.88));color:#fff;box-shadow:0 6px 18px rgba(2,14,30,0.12)}
-    nav .wrap{display:flex;align-items:center;gap:12px;padding:12px 22px}
-    .logo{font-family:"Poppins",sans-serif;font-weight:700;display:flex;align-items:center;gap:10px}
-    .logo .mark{width:36px;height:36px;border-radius:8px;background:var(--accent);display:inline-block}
-    .menu{display:flex;gap:14px;margin-left:20px;align-items:center}
-    .menu a{color:#dbe9f2;padding:8px 10px;border-radius:8px}
-    .menu a:hover{background:rgba(255,255,255,0.05)}
-    .langs{margin-left:auto;display:flex;gap:10px;align-items:center}
-    .cta{background:var(--accent);color:var(--navy);padding:8px 12px;border-radius:24px;font-weight:700}
-    .burger{display:none;background:transparent;border:0;color:white;font-size:22px;padding:6px 8px;border-radius:8px}
-
-    /* HERO */
-    header.hero{padding-top:110px;padding-bottom:44px}
-    .hero-grid{display:grid;grid-template-columns:1fr 460px;gap:28px;align-items:center}
-    .tag{color:var(--muted);text-transform:lowercase;font-weight:600}
-    .title-main{font-family:"Poppins",sans-serif;color:var(--navy);font-size:40px;margin:6px 0}
-    .title-accent{color:var(--accent);font-weight:700}
-    .lead{color:var(--muted);max-width:64ch}
-
-    /* blob image with duotone overlay (grayscale + blend) */
-    .blob{
-      width:420px;height:340px;border-radius:22px;overflow:hidden;position:relative;margin-left:auto;
-      box-shadow:0 12px 30px rgba(12,35,56,0.08);
+    /* === HEADER === */
+    header {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+      background: #0a1930; color: white; display: flex; justify-content: space-between; 
+      align-items: center; padding: 1rem 2rem;
     }
-    .blob img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%) contrast(1.02) brightness(0.95)}
-    .blob::after{
-      content:"";position:absolute;inset:0;background:linear-gradient(140deg, rgba(15,53,85,0.68) 18%, rgba(247,197,0,0.44) 70%);mix-blend-mode:multiply;pointer-events:none;
+    header nav ul { display: flex; list-style: none; }
+    header nav ul li { margin: 0 1rem; }
+    header nav ul li a { color: white; text-decoration: none; font-weight: bold; }
+    header nav ul li a:hover { color: #fdd835; }
+    
+    /* === BURGER MENU === */
+    .burger { display: none; cursor: pointer; }
+    .burger div { width: 25px; height: 3px; background: white; margin: 5px; }
+
+    @media(max-width: 768px) {
+      nav ul { display: none; flex-direction: column; background: #0a1930; position: absolute; top: 60px; right: 0; width: 200px; }
+      nav ul.show { display: flex; }
+      .burger { display: block; }
     }
 
-    /* band */
-    .band{background:var(--navy);color:white;padding:40px;border-radius:16px;margin:34px 0}
-    .band-grid{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:center}
-    .band .yellow{background:var(--accent);color:var(--navy);padding:20px;border-radius:18px;font-family:"Poppins",sans-serif;font-weight:700}
+    /* === SECTIONS === */
+    section { padding: 100px 20px; max-width: 1200px; margin: auto; opacity: 0; transform: translateY(40px); transition: all 1s ease; }
+    section.visible { opacity: 1; transform: translateY(0); }
 
-    /* two-column section */
-    .section{padding:48px 0}
-    .section-grid{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center}
+    .hero { text-align: center; padding-top: 150px; }
+    .hero h1 { font-size: 2.5rem; color: #0a1930; }
+    .hero p { font-size: 1.2rem; color: #555; margin-top: 1rem; }
 
-    /* stats */
-    .stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
-    .stat{background:white;padding:14px;border-radius:12px;box-shadow:0 8px 18px rgba(12,35,56,0.06);min-width:140px}
-    .stat .num{font-weight:800;font-size:22px}
-    .stat .lbl{color:var(--muted);font-size:13px}
+    /* === IMAGE CAROUSEL === */
+    .carousel { position: relative; overflow: hidden; width: 100%; max-width: 800px; margin: 50px auto; }
+    .carousel-track { display: flex; transition: transform 0.5s ease-in-out; }
+    .carousel img { width: 800px; height: 400px; object-fit: cover; filter: grayscale(100%) contrast(120%) sepia(50%) hue-rotate(30deg) saturate(200%); }
 
-    /* carousel */
-    .carousel-wrap{display:flex;justify-content:center;padding:36px 0}
-    .carousel{width:800px;max-width:calc(100% - 40px);height:480px;border-radius:12px;overflow:hidden;position:relative;background:#e9f3f8}
-    .carousel-track{display:flex;height:100%;transition:transform 520ms cubic-bezier(.23,.95,.32,.98)}
-    .carousel .slide{min-width:100%;height:100%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-    .carousel .slide img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05)}
-    .carousel .arrow{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;cursor:pointer;border:0;box-shadow:0 8px 22px rgba(2,6,20,0.12)}
-    .carousel .arrow.left{left:12px}
-    .carousel .arrow.right{right:12px}
-    .carousel .dots{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:8px}
-    .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.6);cursor:pointer}
-    .dot.active{background:var(--accent)}
+    .carousel button { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); border: none; color: white; padding: 10px; cursor: pointer; }
+    .carousel .prev { left: 10px; }
+    .carousel .next { right: 10px; }
 
-    /* text carousel */
-    .text-carousel{max-width:800px;margin:18px auto;overflow:hidden}
-    .text-track{display:flex;transition:transform 520ms cubic-bezier(.23,.95,.32,.98)}
-    .text-slide{min-width:100%;padding:20px;background:white;border-radius:10px;box-shadow:0 10px 22px rgba(10,25,40,0.06)}
+    /* === TEXT CAROUSEL === */
+    .text-carousel { text-align: center; background: #0a1930; color: white; padding: 50px 20px; }
+    .text-carousel p { display: none; font-size: 1.2rem; }
+    .text-carousel p.active { display: block; }
 
-    /* contact/footer */
-    footer.footer{background:linear-gradient(180deg,var(--navy),#052235);color:white;padding:34px 0;margin-top:28px}
-    .footer-grid{display:grid;grid-template-columns:1fr 320px;gap:20px}
-    .newsletter{display:flex;gap:10px;margin-top:8px}
-    .newsletter input{flex:1;padding:10px;border-radius:26px;border:0;outline:none}
+    /* === FOOTER === */
+    footer { background: #0a1930; color: white; text-align: center; padding: 40px 20px; margin-top: 50px; }
+    footer a { color: #fdd835; text-decoration: none; }
 
-    /* whatsapp */
-    .whatsapp{position:fixed;right:18px;bottom:18px;z-index:120;background:var(--accent);width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(10,25,40,0.14);border:4px solid white}
-    .whatsapp svg{width:34px;height:34px}
-
-    /* fade */
-    .fade{opacity:0;transform:translateY(18px);transition:opacity 700ms ease, transform 700ms ease}
-    .fade.in{opacity:1;transform:none}
-
-    /* responsive */
-    @media (max-width:1000px){ .hero-grid{grid-template-columns:1fr 360px} .blob{width:360px;height:320px} .section-grid{grid-template-columns:1fr;gap:20px} .band-grid{grid-template-columns:1fr;gap:18px} }
-    @media (max-width:880px){
-      .menu{display:none}
-      .burger{display:inline-block}
-      .hero-grid{grid-template-columns:1fr}
-      .blob{margin:0 auto}
-      .carousel{height:320px}
+    /* === FLOATING WHATSAPP BUTTON === */
+    .whatsapp-btn {
+      position: fixed; bottom: 20px; right: 20px; background: #25D366; color: white;
+      border-radius: 50%; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center;
+      font-size: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); cursor: pointer; z-index: 1100;
     }
-    /* mobile menu overlay */
-    .mobile-menu{position:fixed;inset:0;background:linear-gradient(180deg, rgba(15,53,85,0.98), rgba(10,32,54,0.95));color:white;z-index:80;display:none;flex-direction:column;padding:34px 20px}
-    .mobile-menu.open{display:flex}
-    .mobile-menu a{font-size:20px;padding:12px 0;color:white}
-    @media (prefers-reduced-motion:reduce){*{transition:none!important}}
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav aria-label="Main navigation">
-    <div class="wrap">
-      <div class="logo"><span class="mark" aria-hidden="true"></span><span>soluciones de tráfico</span></div>
-
-      <div class="menu" id="desktopMenu" aria-hidden="false"></div>
-
-      <div class="langs">
-        <a href="#" aria-label="ES">ES</a> | <a href="#" aria-label="EN">EN</a>
-        <button class="cta" style="margin-left:12px">Contáctenos</button>
-      </div>
-
-      <button class="burger" id="burger" aria-controls="mobileMenu" aria-expanded="false">☰</button>
-    </div>
-  </nav>
-
-  <div id="mobileMenu" class="mobile-menu" aria-hidden="true"></div>
-
-  <!-- HERO -->
-  <header class="hero">
-    <div class="wrap hero-grid">
-      <div>
-        <div class="tag">conoce</div>
-        <div class="title-main">sobre <strong class="title-accent">NOSOTROS</strong></div>
-        <p class="lead fade" data-fade>Creemos en ciudades que se mueven mejor cuando la tecnología está al servicio de las personas. Trabajamos para hacer realidad una movilidad inteligente, segura, incluyente y sostenible.</p>
-        <p><a href="#contacto" class="cta" style="display:inline-block;margin-top:14px">¡Hablemos!</a></p>
-      </div>
-
-      <div style="display:flex;align-items:center;justify-content:center">
-        <div class="blob fade" data-fade>
-          <img alt="Equipo" src="https://source.unsplash.com/1200x900/?team,city,people&sig=21">
-        </div>
-      </div>
-    </div>
+  <!-- HEADER -->
+  <header>
+    <div class="logo"></div>
+    <nav><ul></ul></nav>
+    <div class="burger"><div></div><div></div><div></div></div>
   </header>
 
-  <!-- BAND -->
-  <section id="solutions" class="band fade" data-fade>
-    <div class="wrap band-grid">
-      <div class="yellow">
-        <div style="font-size:18px">Soluciones con</div>
-        <div style="font-size:28px">sentido</div>
-      </div>
-      <div>
-        <h3 style="margin-top:0">Combinamos experiencia, innovación y conocimiento</h3>
-        <p class="lead">Para optimizar el uso del espacio vial, facilitar la movilidad de peatones, ciclistas y vehículos, y ofrecer respuestas concretas a los desafíos viales.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ABOUT -->
-  <section id="about" class="section fade" data-fade>
-    <div class="wrap section-grid">
-      <div>
-        <h2>Experiencia que <span style="color:var(--accent)">respalda</span> soluciones reales</h2>
-        <p class="lead">Durante más de dos décadas hemos liderado proyectos aportando soluciones concretas en diseño, suministro, instalación, modernización y mantenimiento de dispositivos y centros de gestión de tráfico.</p>
-
-        <div class="stats">
-          <div class="stat"><div class="num">26</div><div class="lbl">años de experiencia</div></div>
-          <div class="stat"><div class="num">3</div><div class="lbl">centrales instaladas</div></div>
-          <div class="stat"><div class="num">19</div><div class="lbl">municipios</div></div>
-          <div class="stat"><div class="num">9/10</div><div class="lbl">cobertura Valle de Aburrá</div></div>
-        </div>
-      </div>
-
-      <div>
-        <div class="blob fade" data-fade>
-          <img alt="Técnicos" src="https://source.unsplash.com/1200x900/?engineer,team,construction&sig=37">
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PHOTO CAROUSEL -->
-  <section id="photos" class="fade" data-fade>
-    <div class="carousel-wrap">
-      <div class="carousel" id="photoCarousel" role="region" aria-roledescription="carousel" aria-label="Galería de proyectos">
-        <button class="arrow left" id="prevPhoto" aria-label="Anterior">‹</button>
-        <div class="carousel-track" id="photoTrack" aria-live="polite"></div>
-        <button class="arrow right" id="nextPhoto" aria-label="Siguiente">›</button>
-        <div class="dots" id="photoDots" role="tablist"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TEXT CAROUSEL (lorem ipsum) -->
-  <section id="testimonials" class="fade" data-fade>
-    <div class="text-carousel">
-      <div class="text-track" id="textTrack" aria-live="polite"></div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contacto" class="section fade" data-fade>
-    <div class="wrap">
-      <div style="margin-bottom:18px">
-        <h3>¿Quieres una movilidad más inteligente y sostenible?</h3>
-        <p class="lead">Conversemos sobre cómo la tecnología puede transformar tu ciudad.</p>
-      </div>
-
-      <div style="max-width:520px">
-        <form onsubmit="event.preventDefault()" aria-label="formulario de contacto">
-          <input type="text" placeholder="Nombre" style="width:100%;padding:12px;border-radius:10px;border:1px solid #e6edf2;margin-bottom:8px">
-          <input type="email" placeholder="Correo" style="width:100%;padding:12px;border-radius:10px;border:1px solid #e6edf2;margin-bottom:8px">
-          <textarea placeholder="Mensaje" style="width:100%;padding:12px;border-radius:10px;border:1px solid #e6edf2;margin-bottom:8px"></textarea>
-          <button style="background:var(--navy);color:white;padding:10px 14px;border-radius:10px;border:0">Enviar</button>
-        </form>
-      </div>
-    </div>
-  </section>
+  <!-- CONTENT SECTIONS -->
+  <main id="content"></main>
 
   <!-- FOOTER -->
-  <footer class="footer">
-    <div class="wrap footer-grid">
-      <div>
-        <div style="display:flex;gap:12px;align-items:center">
-          <div class="mark" style="width:44px;height:44px;border-radius:8px;background:var(--accent)"></div>
-          <div><div style="font-weight:700">soluciones de tráfico</div><div style="color:rgba(255,255,255,0.85)">Movilidad más segura y humana.</div></div>
-        </div>
+  <footer id="footer"></footer>
 
-        <div style="margin-top:18px">
-          <div style="font-weight:700">Menú</div>
-          <div id="footerMenu" style="margin-top:8px"></div>
-        </div>
-      </div>
+  <!-- WHATSAPP BUTTON -->
+  <div class="whatsapp-btn">💬</div>
 
-      <div>
-        <div style="font-weight:700">Suscríbete</div>
-        <div class="newsletter"><input placeholder="Ingresa tu correo"><button style="background:var(--accent);border:0;padding:10px 12px;border-radius:24px;font-weight:700;color:var(--navy)">Enviar</button></div>
-      </div>
-    </div>
+  <!-- === EMBEDDED XML DATA === -->
+  <script type="text/xml" id="site-data">
+    <website>
+      <header>
+        <logo>🚦 Soluciones de Tráfico</logo>
+        <menu>
+          <item link="#nosotros">Quiénes somos</item>
+          <item link="#productos">Productos</item>
+          <item link="#servicios">Servicios</item>
+          <item link="#aliados">Aliados</item>
+          <item link="#contacto">Contacto</item>
+        </menu>
+      </header>
 
-    <div style="text-align:center;color:rgba(255,255,255,0.7);padding-top:14px;font-size:13px">© Soluciones de Tráfico S.A.S</div>
-  </footer>
+      <section id="nosotros" type="hero">
+        <title>Conoce sobre nosotros</title>
+        <text>Somos una empresa con 26 años de experiencia en movilidad inteligente y segura.</text>
+      </section>
 
-  <!-- WhatsApp FAB -->
-  <a class="whatsapp" href="https://wa.me/573171234567" target="_blank" aria-label="WhatsApp">
-    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="16" cy="16" r="16" fill="#075E54"/>
-      <path d="M22.05 19.8c-.35.98-2.05 1.88-2.8 2.08-.76.2-1.65.35-3.3-.28-1.7-.64-3.7-2.37-4.3-3.25-.45-.62-.85-1.1-.28-1.79.6-.7 1.05-1.1 1.8-1.6.6-.4.85-.64 1.3-1.05.45-.41.25-.66-.1-.99-.35-.34-1.6-1.53-2.2-2.02-.6-.48-1.45-.2-2.05-.1-.6.1-1.55.62-2.35 1.75-.8 1.1-1 2.4-.9 3.55.1 1.15.85 2.95 1.95 4.45 1.1 1.5 3.8 3.85 7.25 3.7 3.45-.15 4.05-2.15 4.55-2.95.5-.8.5-1.45.35-1.6-.15-.15-.35-.3-.7-.15z" fill="#fff"/>
-    </svg>
-  </a>
+      <carousel id="productos">
+        <title>Nuestros Productos</title>
+        <image>https://picsum.photos/800/400?random=1</image>
+        <image>https://picsum.photos/800/400?random=2</image>
+        <image>https://picsum.photos/800/400?random=3</image>
+      </carousel>
 
-  <!-- Editable XML -->
-  <script id="site-xml" type="application/xml">
-<site>
-  <menu>
-    <item id="about" title="Quiénes somos"/>
-    <item id="solutions" title="Productos"/>
-    <item id="photos" title="Proyectos"/>
-    <item id="testimonials" title="Blog"/>
-    <item id="contacto" title="Contacto"/>
-  </menu>
+      <text-carousel id="servicios">
+        <text>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</text>
+        <text>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</text>
+        <text>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</text>
+      </text-carousel>
 
-  <sections>
-    <section id="about">
-      <title>Experiencia que respalda soluciones reales</title>
-      <lead>Durante más de dos décadas hemos liderado proyectos que integran tecnología, operación y servicio.</lead>
-    </section>
-    <section id="solutions">
-      <title>Soluciones con sentido</title>
-      <lead>Optimizamos el espacio vial y la movilidad con soluciones tecnológicas integrales.</lead>
-    </section>
-  </sections>
-
-  <carousels>
-    <photos>
-      <image>https://source.unsplash.com/1200x800/?traffic,city&sig=101</image>
-      <image>https://source.unsplash.com/1200x800/?street,lights&sig=102</image>
-      <image>https://source.unsplash.com/1200x800/?urban,transport&sig=103</image>
-    </photos>
-    <texts>
-      <slide>“Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer a arcu nec metus consectetur ultricies.”</slide>
-      <slide>“Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.”</slide>
-      <slide>“At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.”</slide>
-    </texts>
-  </carousels>
-</site>
+      <footer>
+        <text>© 2025 Soluciones de Tráfico</text>
+        <privacy link="#">Política de privacidad</privacy>
+      </footer>
+    </website>
   </script>
 
+  <!-- === SCRIPT TO RENDER XML === -->
   <script>
-    document.addEventListener('DOMContentLoaded', function(){
-      // Parse XML
-      const xmlText = document.getElementById('site-xml').textContent.trim();
-      const parser = new DOMParser();
-      let xml;
-      try {
-        xml = parser.parseFromString(xmlText, "application/xml");
-      } catch (e) { console.error('XML parse error', e); return; }
+    // Load XML
+    const xmlText = document.getElementById("site-data").textContent;
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(xmlText, "text/xml");
 
-      // Fill menus (desktop, mobile, footer)
-      const menuItems = xml.querySelectorAll('menu > item');
-      const desktopMenu = document.getElementById('desktopMenu');
-      const mobileMenu = document.getElementById('mobileMenu');
-      const footerMenu = document.getElementById('footerMenu');
-
-      menuItems.forEach(mi=>{
-        const id = mi.getAttribute('id');
-        const title = mi.getAttribute('title');
-
-        const a = document.createElement('a');
-        a.href = '#'+id;
-        a.textContent = title;
-        a.addEventListener('click', ()=> { if(window.innerWidth < 880) toggleMobile(false); });
-        desktopMenu.appendChild(a);
-
-        const am = a.cloneNode(true);
-        mobileMenu.appendChild(am);
-
-        const af = a.cloneNode(true);
-        footerMenu.appendChild(af);
-      });
-
-      // Populate sections titles/leads
-      xml.querySelectorAll('sections > section').forEach(s=>{
-        const id = s.getAttribute('id');
-        const title = s.querySelector('title')?.textContent;
-        const lead = s.querySelector('lead')?.textContent;
-        const el = document.getElementById(id);
-        if(!el) return;
-        const heading = el.querySelector('h2, h3');
-        if(heading && title) heading.textContent = title;
-        const leadEl = el.querySelector('.lead');
-        if(leadEl && lead) leadEl.textContent = lead;
-      });
-
-      // Populate photo carousel
-      const photoUrls = Array.from(xml.querySelectorAll('carousels > photos > image')).map(i=>i.textContent.trim());
-      const photoTrack = document.getElementById('photoTrack');
-      const photoDots = document.getElementById('photoDots');
-
-      photoUrls.forEach((url, idx)=>{
-        const slide = document.createElement('div');
-        slide.className = 'slide';
-        const img = document.createElement('img');
-        img.src = url;
-        img.alt = 'Proyecto ' + (idx+1);
-        slide.appendChild(img);
-        photoTrack.appendChild(slide);
-
-        const dot = document.createElement('div');
-        dot.className = 'dot';
-        dot.dataset.index = idx;
-        dot.addEventListener('click', ()=> goToPhoto(idx));
-        photoDots.appendChild(dot);
-      });
-
-      // Populate text carousel
-      const textSlides = Array.from(xml.querySelectorAll('carousels > texts > slide')).map(s=>s.textContent.trim());
-      const textTrack = document.getElementById('textTrack');
-      textSlides.forEach((t)=>{
-        const slide = document.createElement('div');
-        slide.className = 'text-slide';
-        slide.innerHTML = '<p style="margin:0">' + t + '</p>';
-        textTrack.appendChild(slide);
-      });
-
-      // Initialize carousels
-      // PHOTO
-      const prevBtn = document.getElementById('prevPhoto');
-      const nextBtn = document.getElementById('nextPhoto');
-      let photoIndex = 0;
-      const photoSlides = () => Array.from(photoTrack.children);
-      function updatePhoto(){
-        const slides = photoSlides();
-        if(slides.length === 0) return;
-        photoTrack.style.transform = 'translateX(' + (-photoIndex * 100) + '%)';
-        Array.from(photoDots.children).forEach((d,i)=> d.classList.toggle('active', i===photoIndex));
-      }
-      function goToPhoto(i){
-        const len = photoSlides().length;
-        photoIndex = ((i % len) + len) % len;
-        updatePhoto();
-        resetPhotoAuto();
-      }
-      function nextPhoto(){ goToPhoto(photoIndex + 1); }
-      function prevPhotoFn(){ goToPhoto(photoIndex - 1); }
-      prevBtn.addEventListener('click', prevPhotoFn);
-      nextBtn.addEventListener('click', nextPhoto);
-
-      // autoplay
-      let photoTimer = null;
-      function resetPhotoAuto(){
-        if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        if(photoTimer) clearInterval(photoTimer);
-        photoTimer = setInterval(nextPhoto, 4500);
-      }
-
-      // TEXT carousel
-      const textSlidesEls = () => Array.from(textTrack.children);
-      let textIndex = 0;
-      function updateText(){ const len = textSlidesEls().length; if(len===0) return; textTrack.style.transform = 'translateX(' + (-textIndex*100) + '%)'; }
-      function nextText(){ const len = textSlidesEls().length; if(len===0) return; textIndex = (textIndex + 1) % len; updateText(); }
-      let textTimer = null;
-      function startTextAuto(){
-        if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        if(textTimer) clearInterval(textTimer);
-        textTimer = setInterval(nextText, 6000);
-      }
-
-      // keyboard navigation
-      document.addEventListener('keydown', function(e){
-        if(e.key === 'ArrowLeft') prevPhotoFn();
-        if(e.key === 'ArrowRight') nextPhoto();
-      });
-
-      // small setup after slides appended
-      (function finalizeInit(){
-        // ensure slide widths
-        Array.from(photoTrack.children).forEach(s => s.style.minWidth = '100%');
-        Array.from(textTrack.children).forEach(s => s.style.minWidth = '100%');
-
-        updatePhoto();
-        resetPhotoAuto();
-        updateText();
-        startTextAuto();
-      })();
-
-      // Mobile menu toggle
-      const burger = document.getElementById('burger');
-      const mobile = document.getElementById('mobileMenu');
-      function toggleMobile(open){
-        const isOpen = open === undefined ? !mobile.classList.contains('open') : !!open;
-        mobile.classList.toggle('open', isOpen);
-        burger.setAttribute('aria-expanded', String(isOpen));
-        mobile.setAttribute('aria-hidden', String(!isOpen));
-      }
-      burger.addEventListener('click', ()=> toggleMobile());
-      // close mobile when clicking a link
-      mobile.addEventListener('click', (ev)=>{
-        if(ev.target.tagName === 'A') toggleMobile(false);
-      });
-      // close mobile on outside click
-      document.addEventListener('click', (ev)=>{
-        if(window.innerWidth < 880 && mobile.classList.contains('open')){
-          if(!mobile.contains(ev.target) && !burger.contains(ev.target)) toggleMobile(false);
-        }
-      });
-
-      // Fade in on scroll
-      const fades = document.querySelectorAll('[data-fade]');
-      const observer = new IntersectionObserver((entries)=>{
-        entries.forEach(entry=>{
-          if(entry.isIntersecting){
-            entry.target.classList.add('in');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, {threshold: 0.16});
-      fades.forEach(f => observer.observe(f));
+    // Populate header
+    document.querySelector(".logo").textContent = xml.querySelector("header > logo").textContent;
+    const menuItems = xml.querySelectorAll("header > menu > item");
+    const navList = document.querySelector("nav ul");
+    menuItems.forEach(item => {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = item.getAttribute("link");
+      a.textContent = item.textContent;
+      li.appendChild(a);
+      navList.appendChild(li);
     });
+
+    // Populate sections
+    const content = document.getElementById("content");
+    xml.querySelectorAll("section, carousel, text-carousel").forEach(node => {
+      const sec = document.createElement("section");
+      sec.id = node.getAttribute("id") || "";
+
+      if(node.tagName === "section" && node.getAttribute("type") === "hero") {
+        sec.classList.add("hero");
+        sec.innerHTML = `<h1>${node.querySelector("title").textContent}</h1><p>${node.querySelector("text").textContent}</p>`;
+      }
+
+      if(node.tagName === "carousel") {
+        sec.innerHTML = `<h2 style="text-align:center; color:#0a1930;">${node.querySelector("title").textContent}</h2>
+          <div class="carousel">
+            <button class="prev">‹</button>
+            <div class="carousel-track"></div>
+            <button class="next">›</button>
+          </div>`;
+        const track = sec.querySelector(".carousel-track");
+        node.querySelectorAll("image").forEach(img => {
+          const image = document.createElement("img");
+          image.src = img.textContent;
+          track.appendChild(image);
+        });
+      }
+
+      if(node.tagName === "text-carousel") {
+        sec.classList.add("text-carousel");
+        node.querySelectorAll("text").forEach((t,i) => {
+          const p = document.createElement("p");
+          p.textContent = t.textContent;
+          if(i===0) p.classList.add("active");
+          sec.appendChild(p);
+        });
+      }
+
+      content.appendChild(sec);
+    });
+
+    // Footer
+    const footer = document.getElementById("footer");
+    footer.innerHTML = `${xml.querySelector("footer text").textContent} | 
+      <a href="${xml.querySelector("footer privacy").getAttribute("link")}">
+      ${xml.querySelector("footer privacy").textContent}</a>`;
+
+    // Burger menu
+    const burger = document.querySelector('.burger');
+    burger.addEventListener('click', () => navList.classList.toggle('show'));
+
+    // Scroll fade-in
+    const sections = document.querySelectorAll('section');
+    window.addEventListener('scroll', () => {
+      sections.forEach(sec => {
+        const top = sec.getBoundingClientRect().top;
+        if(top < window.innerHeight - 100) sec.classList.add('visible');
+      });
+    });
+
+    // Carousels
+    function initCarousels() {
+      document.querySelectorAll('.carousel').forEach(carousel => {
+        const track = carousel.querySelector('.carousel-track');
+        const images = track.querySelectorAll('img');
+        let index = 0;
+        carousel.querySelector('.next').addEventListener('click', () => {
+          index = (index + 1) % images.length;
+          track.style.transform = `translateX(-${index * 800}px)`;
+        });
+        carousel.querySelector('.prev').addEventListener('click', () => {
+          index = (index - 1 + images.length) % images.length;
+          track.style.transform = `translateX(-${index * 800}px)`;
+        });
+      });
+    }
+    initCarousels();
+
+    // Text carousel autoplay
+    setInterval(() => {
+      document.querySelectorAll('.text-carousel').forEach(car => {
+        const texts = car.querySelectorAll("p");
+        let current = [...texts].findIndex(t => t.classList.contains("active"));
+        texts[current].classList.remove("active");
+        let next = (current + 1) % texts.length;
+        texts[next].classList.add("active");
+      });
+    }, 4000);
   </script>
 </body>
 </html>
