@@ -1,104 +1,401 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Soluciones de Tráfico</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Soluciones — Replica demo</title>
+
+  <!-- Google fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
   <style>
-    body {margin:0;font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#0b1b2a;line-height:1.6;}
-    header {position:fixed;top:0;left:0;width:100%;background:#0b1b2a;color:#fff;z-index:1000;display:flex;justify-content:space-between;align-items:center;padding:10px 20px;}
-    header nav {display:flex;gap:20px;}
-    header nav a {color:#fff;text-decoration:none;font-weight:500;}
-    .burger {display:none;flex-direction:column;cursor:pointer;}
-    .burger div {width:25px;height:3px;background:#fff;margin:4px 0;}
-    @media(max-width:768px){
-      header nav {display:none;flex-direction:column;position:absolute;top:60px;right:0;background:#0b1b2a;width:200px;}
-      header nav.show {display:flex;}
-      .burger {display:flex;}
+    :root{
+      --navy:#0f3555;
+      --accent:#f7c500;
+      --cyan:#2ea6d6;
+      --muted:#5e6b76;
+      --page-bg:#f2f6f8;
+      --container:1200px;
+      --radius:14px;
+      --transition: 420ms cubic-bezier(.2,.9,.2,1);
     }
-    section {padding:100px 20px 60px;max-width:1100px;margin:auto;}
-    h2 {color:#0b1b2a;margin-bottom:20px;}
-    .carousel, .text-carousel {max-width:800px;margin:40px auto;overflow:hidden;position:relative;}
-    .carousel img {width:100%;height:auto;filter:grayscale(100%) contrast(1.2) brightness(0.9);border-radius:12px;}
-    .carousel-track, .text-carousel-track {display:flex;transition:transform 0.5s ease;}
-    .carousel-btn, .text-carousel-btn {position:absolute;top:50%;transform:translateY(-50%);background:#0b1b2a;color:#fff;border:none;padding:10px;cursor:pointer;border-radius:50%;}
-    .carousel-btn.prev {left:10px;}
-    .carousel-btn.next {right:10px;}
-    .text-carousel {background:#f5f5f5;border-radius:12px;padding:20px;}
-    .text-carousel-item {min-width:100%;padding:20px;text-align:center;font-size:1.2rem;}
-    .whatsapp-fab {position:fixed;bottom:20px;right:20px;background:#25d366;color:#fff;border-radius:50%;padding:15px;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;z-index:1000;}
+
+    /* Reset + base */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:var(--page-bg);
+      color:var(--navy);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.6;
+      scroll-behavior:smooth;
+    }
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+
+    /* Container */
+    .wrap{max-width:var(--container);margin:0 auto;padding:28px;}
+
+/* NAV
+   Fixed on desktop, burger on small screens
+*/
+nav.site-nav{
+  position:fixed;left:0;right:0;top:0;z-index:60;
+  background: linear-gradient(180deg, rgba(15,53,85,0.95), rgba(15,53,85,0.85));
+  color:white;
+  box-shadow:0 6px 20px rgba(2,14,30,0.15);
+}
+nav .wrap{display:flex;align-items:center;gap:18px; padding:14px 28px;}
+.logo{
+  display:flex;align-items:center;gap:12px;font-weight:700;
+  font-family:"Poppins",sans-serif;font-size:18px;
+}
+.logo .mark{width:36px;height:36px;border-radius:8px;background:var(--accent);display:inline-block}
+nav .menu {margin-left:24px;display:flex;gap:18px;align-items:center}
+nav .menu a{color:#dbe9f2;padding:8px 10px;border-radius:8px}
+nav .menu a:hover{background:rgba(255,255,255,0.06)}
+.langs{margin-left:auto;display:flex;gap:10px;align-items:center}
+.cta-contact{background:var(--accent);padding:10px 14px;border-radius:26px;color:var(--navy);font-weight:600}
+.burger{display:none;margin-left:12px;border:0;background:transparent;color:white}
+
+/* Hero */
+.hero{
+  padding-top:120px; /* make room for fixed nav */
+  padding-bottom:80px;
+  position:relative;
+  overflow:visible;
+}
+.hero .wrap{
+  display:grid;grid-template-columns:1fr 480px;gap:36px;align-items:center;
+}
+.hero .hero-left{
+  padding:28px 12px;
+}
+.tag-small{font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-size:13px}
+.hero-title{
+  font-family:"Poppins",sans-serif;
+  display:flex;flex-direction:column;
+  gap:6px;
+}
+.hero-title .over{font-size:20px;color:#dbeaf6; text-transform:lowercase}
+.hero-title .big{
+  font-size:56px;color:white;line-height:0.9;
+  position:relative;
+  font-weight:700;
+  letter-spacing:-1px;
+}
+.hero-title .accent{color:var(--accent);font-size:24px; font-weight:700}
+
+/* blob card wrappers */
+.hero-blob{
+  position:relative; width:100%; height:100%;
+  display:flex;align-items:center;justify-content:center;
+}
+/* image container using clip-path + duotone overlay */
+.blob-image{
+  width:420px;height:360px;border-radius:28px;position:relative;overflow:hidden;
+  display:block;margin-left:auto;
+}
+.blob-image img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05) brightness(0.95);transform-origin:center center;}
+.blob-image::after{ /* color overlay that creates duotone effect */
+  content:"";position:absolute;inset:0;
+  background: linear-gradient(135deg, rgba(14,57,95,0.72) 10%, rgba(247,197,0,0.55) 70%);
+  mix-blend-mode:multiply;pointer-events:none;
+}
+
+/* content sections */
+.section{padding:64px 0;position:relative}
+.section .wrap{display:grid;grid-template-columns:1fr 420px;gap:36px;align-items:center}
+.section.alt{background:transparent}
+.lead{font-size:16.5px;color:var(--muted);max-width:62ch}
+
+/* dark band */
+.band{
+  background:var(--navy);color:white;padding:44px 0;border-radius:18px;margin:40px 0;
+}
+.band .wrap{display:grid;grid-template-columns:420px 1fr;align-items:center;gap:30px}
+.band .yellow-blob{
+  background:var(--accent);padding:30px;border-radius:30px;box-shadow:0 10px 30px rgba(15,53,85,0.08);
+  color:var(--navy);font-weight:700;font-family:"Poppins",sans-serif
+}
+
+/* stats */
+.stats{display:flex;gap:18px;flex-wrap:wrap;margin-top:22px}
+.stat{
+  flex:1 1 200px;padding:18px;border-radius:14px;background:white;min-width:140px;
+  display:flex;flex-direction:column;align-items:flex-start;gap:6px;box-shadow:0 6px 18px rgba(12,35,56,0.06)
+}
+.stat .num{font-weight:800;font-size:22px;color:var(--navy)}
+.stat .lbl{color:var(--muted);font-size:14px}
+
+/* carousel (photo) */
+.carousel-wrap{display:flex;justify-content:center;padding:46px 0}
+.carousel{
+  width:800px;max-width:calc(100% - 40px);height:480px;position:relative;border-radius:16px;overflow:hidden;background:#e9f3f8;
+  display:flex;align-items:center;justify-content:center;
+}
+.carousel-track{display:flex;height:100%;transition:transform 520ms cubic-bezier(.23,.95,.32,.98)}
+.slide{min-width:100%;height:100%;flex-shrink:0;position:relative;display:flex;align-items:center;justify-content:center}
+.slide img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);}
+
+/* carousel controls */
+.carousel .arrow{
+  position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;
+  background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:0 8px 22px rgba(2,6,20,0.12);border:0
+}
+.carousel .arrow.left{left:12px}
+.carousel .arrow.right{right:12px}
+.carousel .dots{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:8px}
+.carousel .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.6);cursor:pointer}
+.carousel .dot.active{background:var(--accent)}
+
+/* text carousel */
+.text-carousel{background:transparent;padding:28px;border-radius:12px;max-width:800px;margin:18px auto}
+.text-slide{min-height:80px;padding:20px;border-radius:10px;background:white;box-shadow:0 8px 20px rgba(10,25,40,0.06)}
+
+/* footer */
+.footer{
+  background:linear-gradient(180deg,var(--navy),#052235);color:white;padding:40px 0;margin-top:40px;border-top:6px solid rgba(255,255,255,0.02)
+}
+.footer .wrap{display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start}
+.newsletter{display:flex;gap:12px;align-items:center}
+.newsletter input{flex:1;padding:12px;border-radius:30px;border:0;outline:0}
+.newsletter button{background:var(--accent);padding:10px 16px;border-radius:30px;border:0;font-weight:700}
+
+/* floating whatsapp */
+.whatsapp-fab{
+  position:fixed;right:18px;bottom:18px;z-index:120;background:var(--accent);width:64px;height:64px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(10,25,40,0.14);
+  border:4px solid white;cursor:pointer
+}
+.whatsapp-fab svg{width:34px;height:34px}
+
+/* fade animation */
+.fade-section{opacity:0;transform:translateY(18px);transition:opacity 720ms ease, transform 720ms ease}
+.fade-section.in-view{opacity:1;transform:none}
+
+/* responsive */
+@media (max-width:1000px){
+  .hero .wrap{grid-template-columns:1fr 360px}
+  .blob-image{width:360px;height:320px}
+}
+@media (max-width:880px){
+  nav .menu{display:none}
+  .burger{display:inline-block}
+  nav .wrap{padding:12px}
+  .hero{padding-top:88px}
+  .hero .wrap{grid-template-columns:1fr;gap:18px}
+  .hero .blob-image{margin:0 auto}
+  .section .wrap{grid-template-columns:1fr;gap:28px}
+  .band .wrap{grid-template-columns:1fr;gap:20px}
+  .footer .wrap{grid-template-columns:1fr;gap:18px}
+  .carousel{height:320px}
+}
+/* overlay mobile menu */
+.mobile-menu{
+  position:fixed;inset:0;background:linear-gradient(180deg, rgba(15,53,85,0.98), rgba(10,32,54,0.95));color:white;z-index:80;display:none;
+  flex-direction:column;padding:40px 24px;
+}
+.mobile-menu.open{display:flex}
+.mobile-menu a{padding:12px 0;font-size:20px;color:rgba(255,255,255,0.95)}
+/* reduced motion */
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important}
+}
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">Soluciones de Tráfico</div>
-    <nav>
-      <a href="#about">Quiénes somos</a>
-      <a href="#products">Productos</a>
-      <a href="#services">Servicios</a>
-      <a href="#allies">Aliados</a>
-      <a href="#contact">Contáctenos</a>
-    </nav>
-    <div class="burger" id="burger">
-      <div></div>
-      <div></div>
-      <div></div>
+
+<!-- NAV -->
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="wrap">
+    <div class="logo">
+      <span class="mark" aria-hidden="true"></span>
+      <span>soluciones de tráfico</span>
     </div>
-  </header>
 
-  <section id="about">
-    <h2>Conoce sobre nosotros</h2>
-    <p>Creemos en ciudades que se mueven mejor cuando la tecnología está al servicio de las personas...</p>
-  </section>
+    <div class="menu" id="desktopMenu" aria-hidden="false">
+      <!-- menu entries injected by XML parser -->
+    </div>
 
-  <section id="carousel">
-    <div class="carousel">
-      <button class="carousel-btn prev" id="prevImg">‹</button>
-      <div class="carousel-track" id="carouselTrack">
-        <img src="https://source.unsplash.com/800x400/?city,traffic" alt="slide1">
-        <img src="https://source.unsplash.com/800x400/?road,technology" alt="slide2">
-        <img src="https://source.unsplash.com/800x400/?urban,mobility" alt="slide3">
+    <div class="langs">
+      <a href="#" aria-label="es">ES</a> | <a href="#" aria-label="en">EN</a>
+      <button class="cta-contact">Contáctenos</button>
+    </div>
+
+    <button class="burger" id="burgerBtn" aria-expanded="false" aria-controls="mobileMenu">☰</button>
+  </div>
+</nav>
+
+<!-- Mobile menu overlay -->
+<div id="mobileMenu" class="mobile-menu" role="menu" aria-hidden="true">
+  <!-- injected by XML -->
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-left">
+      <div class="tag-small">conoce</div>
+      <div class="hero-title">
+        <div class="over">sobre</div>
+        <div class="big">NOSOTROS</div>
+        <div class="accent">Creemos en ciudades que se mueven mejor</div>
       </div>
-      <button class="carousel-btn next" id="nextImg">›</button>
-    </div>
-  </section>
 
-  <section id="text-carousel">
-    <h2>Testimonios y mensajes</h2>
-    <div class="text-carousel">
-      <button class="text-carousel-btn prev" id="prevText">‹</button>
-      <div class="text-carousel-track" id="textTrack">
-        <div class="text-carousel-item">“Contribuimos a ciudades más humanas y sostenibles.”</div>
-        <div class="text-carousel-item">“Más de 26 años ofreciendo soluciones reales.”</div>
-        <div class="text-carousel-item">“Nuestra prioridad es la seguridad y movilidad incluyente.”</div>
+      <p class="lead fade-section" data-fade>Somos una empresa colombiana ... trabajamos para hacer realidad una movilidad que sea inteligente, segura, incluyente y sostenible.</p>
+
+      <p><a class="cta-contact" href="#contacto">¡Hablemos!</a></p>
+    </div>
+
+    <div class="hero-blob">
+      <div class="blob-image" aria-hidden="true">
+        <!-- sample image from image bank; tinted by CSS overlay (duotone) -->
+        <img src="https://source.unsplash.com/900x700/?traffic,city&sig=11" alt="Equipo soluciones - foto">
       </div>
-      <button class="text-carousel-btn next" id="nextText">›</button>
     </div>
-  </section>
+  </div>
+</header>
 
-  <footer id="contact">
-    <p>© 2025 Soluciones de Tráfico. Todos los derechos reservados.</p>
-  </footer>
+<!-- Features band -->
+<section id="solutions" class="band section fade-section" data-fade>
+  <div class="wrap">
+    <div class="yellow-blob">
+      <div style="font-size:20px">Soluciones con</div>
+      <div style="font-family:Poppins;font-size:32px">sentido</div>
+    </div>
+    <div>
+      <h3 style="margin-top:0">Combinamos experiencia, innovación y conocimiento</h3>
+      <p class="lead">Para optimizar el uso del espacio vial, facilitar la movilidad de peatones, ciclistas y vehículos.</p>
+    </div>
+  </div>
+</section>
 
-  <div class="whatsapp-fab">💬</div>
+<!-- Experience section -->
+<section id="about" class="section fade-section" data-fade>
+  <div class="wrap">
+    <div>
+      <h2>Experiencia que <span style="color:var(--accent)">respalda</span> soluciones reales</h2>
+      <p class="lead">Durante más de dos décadas ... ofrecemos soluciones concretas en diseño, suministro, instalación, modernización y mantenimiento.</p>
+      <div class="stats">
+        <div class="stat"><div class="num">26</div><div class="lbl">años de experiencia en el sector ITS</div></div>
+        <div class="stat"><div class="num">3</div><div class="lbl">centrales de gestión de tráfico instaladas</div></div>
+        <div class="stat"><div class="num">19</div><div class="lbl">municipios con presencia activa</div></div>
+        <div class="stat"><div class="num">9 de 10</div><div class="lbl">municipios del Valle de Aburrá con cobertura</div></div>
+      </div>
+    </div>
 
-  <script>
-    // Burger menu toggle
-    document.getElementById('burger').addEventListener('click',()=>{
-      document.querySelector('header nav').classList.toggle('show');
-    });
+    <div style="position:relative;">
+      <div class="blob-image" aria-hidden="true">
+        <img src="https://source.unsplash.com/900x700/?engineer,team&sig=3" alt="Equipo técnico - foto">
+      </div>
+    </div>
+  </div>
+</section>
 
-    // Image carousel
-    const imgTrack=document.getElementById('carouselTrack');
-    let imgIndex=0;
-    document.getElementById('nextImg').onclick=()=>{imgIndex=(imgIndex+1)%3;imgTrack.style.transform=`translateX(-${imgIndex*100}%)`;}
-    document.getElementById('prevImg').onclick=()=>{imgIndex=(imgIndex-1+3)%3;imgTrack.style.transform=`translateX(-${imgIndex*100}%)`;}
+<!-- Photo carousel -->
+<section id="photos" class="section fade-section" data-fade>
+  <div class="carousel-wrap">
+    <div class="carousel" id="photoCarousel" aria-roledescription="carousel">
+      <button class="arrow left" data-dir="-1" aria-label="Anterior">&lt;</button>
+      <div class="carousel-track" id="photoTrack">
+        <!-- slides injected by XML -->
+      </div>
+      <button class="arrow right" data-dir="1" aria-label="Siguiente">&gt;</button>
+      <div class="dots" id="photoDots"></div>
+    </div>
+  </div>
+</section>
 
-    // Text carousel alternative (manual buttons)
-    const textTrack=document.getElementById('textTrack');
-    let textIndex=0;
-    document.getElementById('nextText').onclick=()=>{textIndex=(textIndex+1)%3;textTrack.style.transform=`translateX(-${textIndex*100}%)`;}
-    document.getElementById('prevText').onclick=()=>{textIndex=(textIndex-1+3)%3;textTrack.style.transform=`translateX(-${textIndex*100}%)`;}
-  </script>
-</body>
-</html>
+<!-- Text carousel (lorem ipsum paragraph block) -->
+<section id="testimonials" class="section fade-section" data-fade>
+  <div class="text-carousel" id="textCarousel">
+    <div class="carousel-track" id="textTrack">
+      <!-- text slides injected by XML -->
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter & contact -->
+<section id="contacto" class="section fade-section" data-fade>
+  <div class="wrap">
+    <div>
+      <h3>¿Buscas soluciones para una movilidad más inteligente, segura, incluyente y sostenible?</h3>
+      <p class="lead">Conversemos sobre cómo la tecnología puede transformar tu ciudad.</p>
+    </div>
+
+    <div>
+      <form onsubmit="event.preventDefault();" aria-label="contact form">
+        <input type="text" placeholder="Nombre" style="width:100%;padding:12px;border-radius:10px;border:1px solid #e4e9ee;margin-bottom:10px">
+        <input type="email" placeholder="Correo" style="width:100%;padding:12px;border-radius:10px;border:1px solid #e4e9ee;margin-bottom:10px">
+        <textarea placeholder="Mensaje" style="width:100%;padding:12px;border-radius:10px;border:1px solid #e4e9ee;margin-bottom:10px"></textarea>
+        <button style="background:var(--navy);color:white;padding:10px 14px;border-radius:10px;border:0">Enviar</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <div class="mark" style="width:44px;height:44px;border-radius:8px;background:var(--accent)"></div>
+        <div>
+          <div style="font-weight:700">soluciones de tráfico</div>
+          <div style="color:rgba(255,255,255,0.8)">Trabajamos por una movilidad más segura y humana.</div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px">
+        <div style="font-weight:700;margin-bottom:8px">Menú</div>
+        <div id="footerMenu"></div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-weight:700;margin-bottom:8px">Suscríbete a nuestro newsletter</div>
+      <div class="newsletter">
+        <input aria-label="email" placeholder="Ingresa tu correo electrónico">
+        <button>Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;color:rgba(255,255,255,0.65);padding-top:18px;font-size:13px">© Todos los derechos reservados • Soluciones de Tráfico S.A.S 2025</div>
+</footer>
+
+<!-- Floating WhatsApp button -->
+<a class="whatsapp-fab" href="https://wa.me/573171234567" target="_blank" aria-label="Contactar por WhatsApp" title="Contactar por WhatsApp">
+  <!-- inline SVG WhatsApp icon -->
+  <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="16" cy="16" r="16" fill="#075E54"/>
+    <path d="M23.2 8.8C21.1 6.9 18.7 6 16 6 9.7 6 4.6 11.1 4.6 17.4c0 2.1.6 4 1.7 5.7L6 26.7l3-1c1.4.8 3 1.3 4.6 1.3 6.3 0 11.4-5.1 11.4-11.4 0-2.7-1-5.1-2.8-6.8z" fill="#fff" opacity="0.05"/>
+    <path d="M22.05 19.8c-.35.98-2.05 1.88-2.8 2.08-.76.2-1.65.35-3.3-.28-1.7-.64-3.7-2.37-4.3-3.25-.45-.62-.85-1.1-.28-1.79.6-.7 1.05-1.1 1.8-1.6.6-.4.85-.64 1.3-1.05.45-.41.25-.66-.1-.99-.35-.34-1.6-1.53-2.2-2.02-.6-.48-1.45-.2-2.05-.1-.6.1-1.55.62-2.35 1.75-.8 1.1-1 2.4-.9 3.55.1 1.15.85 2.95 1.95 4.45 1.1 1.5 3.8 3.85 7.25 3.7 3.45-.15 4.05-2.15 4.55-2.95.5-.8.5-1.45.35-1.6-.15-.15-.35-.3-.7-.15z" fill="#fff"/>
+  </svg>
+</a>
+
+<!-- EMBEDDED XML (edit this block to update content) -->
+<script id="site-xml" type="application/xml">
+<site>
+  <menu>
+    <item id="about" title="Quiénes somos"/>
+    <item id="solutions" title="Productos"/>
+    <item id="photos" title="Proyectos"/>
+    <item id="testimonials" title="Blog"/>
+    <item id="contacto" title="Contactos"/>
+  </menu>
+
+  <sections>
+    <section id="about">
+      <title>Experiencia que respalda soluciones reales</title>
+      <lead>Durante más de dos décadas hemos liderado con éxito proyectos en todo el país, aportando soluciones concretas en diseño, suministro, instalación y mantenimiento de redes semafóricas, dispositivos y centros de gestión de tráfico.</lead>
+    </section>
+
+    <section id="solutions">
+      <title>Soluciones con sentido</title>
+      <lead>Combinamos experiencia, innovación y conocimiento para optimizar la movilidad y ofrecer respuestas concretas a los retos viales.</lead>
